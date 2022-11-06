@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.12
+	local MXVersion = 1.13
 	-- {Update Script}
 		local response = false
 			async_http.init("raw.githubusercontent.com", "/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
@@ -32,9 +32,9 @@
 							local f = io.open(filesystem.scripts_dir()..SCRIPT_RELPATH, "wb")
 							f:write(a)
 							f:close()
-							util.show_corner_help("~g~Successfully updated MiradeliaX. Restarting Script...")
+							util.show_corner_help("~g~Successfully updated MiradeliaX.")
 							--util.toast("Successfully updated MiradeliaX. Restarting Script...")
-							util.yield(1000)
+							util.yield(1250)
 							util.restart_script()
 						end)
 						async_http.dispatch()
