@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.1
+	local MXVersion = 1.12
 	-- {Update Script}
 		local response = false
 			async_http.init("raw.githubusercontent.com", "/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
@@ -1492,7 +1492,7 @@
 					MX.action(requestoptions, "Kosatka", {}, "", function(on)
 						SET_INT_GLOBAL(2815059 + 933, 1)end)
 			MX.toggle_loop(onlineoptions, "Disable Text Chat", {}, "", function(toggled)
-				HUD.MP_TEXT_CHAT_DISABLE(true)end)
+				HUD._MULTIPLAYER_CHAT_SET_DISABLED(true)end)
 			MX.divider(onlineoptions, "---> Nightclub Options <---")
 			MX.toggle_loop(onlineoptions, "Nightclub Popularity", {}, "Keeps the Nightclub Popularity at max", function ()
 				if util.is_session_started() then
