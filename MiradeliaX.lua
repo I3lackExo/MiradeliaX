@@ -13,34 +13,38 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.0
+	local MXVersion = 1.1
 	-- {Update Script}
 		local response = false
-		async_http.init("raw.githubusercontent.com", "/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
-			currentVer = tonumber(output)
-			response = true
-			if MXVersion ~= currentVer then
-				util.toast("New MiradeliaX version is available!!!")
-				menu.action(menu.my_root(), "Update MiradeliaX", {}, "", function()
-					async_http.init("raw.githubusercontent.com","/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaX.lua",function(a)
-						local err = select(2,load(a))
-						if err then
-							util.toast("Script failed to download. Please try again later. If this continues to happen then manually update via github.")
-						return end
-						local f = io.open(filesystem.scripts_dir()..SCRIPT_RELPATH, "wb")
-						f:write(a)
-						f:close()
-						util.toast("Successfully updated MiradeliaX. Restarting Script...")
-						util.restart_script()
+			async_http.init("raw.githubusercontent.com", "/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
+				currentVer = tonumber(output)
+				response = true
+				if MXVersion ~= currentVer then
+					util.show_corner_help("~h~~p~New MiradeliaX version is available!!!")
+					--util.toast("New MiradeliaX version is available!!!")
+					menu.action(menu.my_root(), "Update MiradeliaX", {}, "", function()
+						async_http.init("raw.githubusercontent.com","/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaX.lua",function(a)
+							local err = select(2,load(a))
+							if err then
+								util.show_corner_help("~r~Script failed to download. Please try again later. If this continues to happen then manually update via github.")
+								--util.toast("Script failed to download. Please try again later. If this continues to happen then manually update via github.")
+							return end
+							local f = io.open(filesystem.scripts_dir()..SCRIPT_RELPATH, "wb")
+							f:write(a)
+							f:close()
+							util.show_corner_help("~g~Successfully updated MiradeliaX. Restarting Script...")
+							--util.toast("Successfully updated MiradeliaX. Restarting Script...")
+							util.yield(1000)
+							util.restart_script()
+						end)
+						async_http.dispatch()
 					end)
-					async_http.dispatch()
-				end)
-			end
-		end, function() response = true end)
-		async_http.dispatch()
-		repeat 
-			util.yield()
-		until response
+				end
+			end, function() response = true end)
+			async_http.dispatch()
+			repeat 
+				util.yield()
+			until response
 	-- {Locals}	
 		local debug = false
 		util.keep_running()
@@ -941,6 +945,8 @@
 					if util.is_session_started() then
 					memory.write_float(memory.script_global(262145 + 30176), 200000.0)
 					end end)
+				MX.toggle_loop(pvpoptions, "Max Auto-Aim Range", {""}, "", function()
+					PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 99999999.0)end)
 				MX.divider(pvpoptions, "---> Weapon Buffs <---")
 				MX.toggle(pvpoptions, "Better Precision Rifle", {}, "", function(on_toggle)
 					if on_toggle then
@@ -1475,6 +1481,18 @@
 						MX.trigger_commands("crewmotto "..Crew_2.CrewMotto)
 						MX.trigger_commands("crewaltbadge "..Crew_2.CrewBadge)
 						util.toast("Crew spoofed as "..Crew_2.CrewTag)end)
+			requestoptions = MX.list(onlineoptions, "> Request's", {}, "", function(); end)
+				MX.divider(requestoptions, "---> Request's <---")
+					MX.action(requestoptions, "MOC", {}, "", function(on)
+						SET_INT_GLOBAL(2815059 + 913, 1)end)
+					MX.action(requestoptions, "Avenger", {}, "", function(on)
+						SET_INT_GLOBAL(2815059 + 921, 1)end)
+					MX.action(requestoptions, "Terrorbyte", {}, "", function(on)
+						SET_INT_GLOBAL(2815059 + 925, 1)end)
+					MX.action(requestoptions, "Kosatka", {}, "", function(on)
+						SET_INT_GLOBAL(2815059 + 933, 1)end)
+			MX.toggle_loop(onlineoptions, "Disable Text Chat", {}, "", function(toggled)
+				HUD.MP_TEXT_CHAT_DISABLE(true)end)
 			MX.divider(onlineoptions, "---> Nightclub Options <---")
 			MX.toggle_loop(onlineoptions, "Nightclub Popularity", {}, "Keeps the Nightclub Popularity at max", function ()
 				if util.is_session_started() then
@@ -1484,15 +1502,7 @@
 						util.yield(250)
 					end
 				end end)
-			--[[MX.divider(onlineoptions, "---> Request's <---")
-				MX.action(onlineoptions, "MOC", {}, "", function(on)
-					SET_INT_GLOBAL(2815059 + 913, 1)end)
-				MX.action(onlineoptions, "Avenger", {}, "", function(on)
-					SET_INT_GLOBAL(2815059 + 921, 1)end)
-				MX.action(onlineoptions, "Terrorbyte", {}, "", function(on)
-					SET_INT_GLOBAL(2815059 + 925, 1)end)
-				MX.action(onlineoptions, "Kosatka", {}, "", function(on)
-					SET_INT_GLOBAL(2815059 + 933, 1)end)]]
+			MX.divider(onlineoptions, "---> Modder Detection <---")
 			MX.action(onlineoptions,"Check Stats", {}, "Lobby check",function(on)
 					for pid = 0, 32 do
 						local rp = players.get_rank(pid)
@@ -1682,7 +1692,7 @@
 					TASK.TASK_PLAY_ANIM(player, agroup, anim1, 8.0, 8.0, 3000, 0, 0, false, false, false)
 					util.yield(1000)
 					entities.create_object(ashit, c)end)
-			MX.action(miscoptions, "Custom Fake Banner", {"banner"}, "", function(on_click) PT.show_command_box("banner ") end, function(text)
+			MX.action(miscoptions, "Custom Fake Banner", {"banner"}, "", function(on_click) MX.show_command_box("banner ") end, function(text)
 				custom_alert(text)end)
 			MX.divider(miscoptions, "---> Casino <---")
 			MX.toggle_loop(miscoptions, "Auto Black Jack", {}, "", function()
@@ -1693,7 +1703,105 @@
 				else
 					PAD._SET_CONTROL_NORMAL(2, 203, 1) --pass
 				end end)
-			MX.divider(miscoptions, "---> Lobby Settings <---")
+			MX.divider(miscoptions, "---> Lobby Settings <---")	
+			menu.list_action(miscoptions, "Clear All...", {}, "", {"Peds", "Vehicles", "Objects", "Pickups", "Ropes", "Projectiles", "Sounds"}, function(index, name)
+				util.toast("Clearing "..name:lower().."...")
+				local counter = 0
+				pluto_switch index do
+					case 1:
+						for _, ped in ipairs(entities.get_all_peds_as_handles()) do
+							if ped ~= players.user_ped() and not PED.IS_PED_A_PLAYER(ped) then
+								entities.delete_by_handle(ped)
+								counter += 1
+								util.yield()
+							end
+						end
+						break
+					case 2:
+						for _, vehicle in ipairs(entities.get_all_vehicles_as_handles()) do
+							if vehicle ~= PED.GET_VEHICLE_PED_IS_IN(players.user_ped(), false) and DECORATOR.DECOR_GET_INT(vehicle, "Player_Vehicle") == 0 and NETWORK.NETWORK_HAS_CONTROL_OF_ENTITY(vehicle) then
+								entities.delete_by_handle(vehicle)
+								counter += 1
+							end
+							util.yield()
+						end
+						break
+					case 3:
+						for _, object in ipairs(entities.get_all_objects_as_handles()) do
+							entities.delete_by_handle(object)
+							counter += 1
+							util.yield()
+						end
+						break
+					case 4:
+						for _, pickup in ipairs(entities.get_all_pickups_as_handles()) do
+							entities.delete_by_handle(pickup)
+							counter += 1
+							util.yield()
+						end
+						break
+					case 5:
+						local temp = memory.alloc(4)
+						for i = 0, 101 do
+							memory.write_int(temp, i)
+							if PHYSICS.DOES_ROPE_EXIST(temp) then
+								PHYSICS.DELETE_ROPE(temp)
+								counter += 1
+							end
+							util.yield()
+						end
+						break
+					case 6:
+						local coords = players.get_position(players.user())
+						MISC.CLEAR_AREA_OF_PROJECTILES(coords.x, coords.y, coords.z, 1000, 0)
+						counter = "all"
+						break
+					case 4:
+						for i = 0, 99 do
+							AUDIO.STOP_SOUND(i)
+							util.yield()
+						end
+					break
+				end
+				util.toast("Cleared "..tostring(counter).." "..name:lower()..".")end)
+			MX.action(miscoptions, "Clear Everything", {"cleanse"}, "Warning: It really clears everything.", function()
+				local cleanse_entitycount = 0
+				for _, ped in pairs(entities.get_all_peds_as_handles()) do
+					if ped ~= players.user_ped() and not PED.IS_PED_A_PLAYER(ped) then
+						entities.delete_by_handle(ped)
+						cleanse_entitycount += 1
+					end
+				end
+				--util.toast("Cleared " .. cleanse_entitycount .. " Peds")
+				cleanse_entitycount = 0
+				for _, veh in ipairs(entities.get_all_vehicles_as_handles()) do
+					entities.delete_by_handle(veh)
+					cleanse_entitycount += 1
+					util.yield()
+				end
+				--util.toast("Cleared ".. cleanse_entitycount .." Vehicles")
+				cleanse_entitycount = 0
+				for _, object in pairs(entities.get_all_objects_as_handles()) do
+					entities.delete_by_handle(object)
+					cleanse_entitycount += 1
+				end
+				--util.toast("Cleared " .. cleanse_entitycount .. " Objects")
+				cleanse_entitycount = 0
+				for _, pickup in pairs(entities.get_all_pickups_as_handles()) do
+					entities.delete_by_handle(pickup)
+					cleanse_entitycount += 1
+				end
+				--util.toast("Cleared " .. cleanse_entitycount .. " Pickups")
+				local temp = memory.alloc(4)
+				for i = 0, 100 do
+					memory.write_int(temp, i)
+					PHYSICS.DELETE_ROPE(temp)
+				end
+				--util.toast("Cleared All Ropes")
+				local pos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
+				MISC.CLEAR_AREA_OF_PROJECTILES(pos.x, pos.y, pos.z, 400, 0)
+				Assistant("> I have removed everything from your area.",colors.green)
+				end)
 			MX.action(miscoptions, "Check Lobby", {}, "", function(on)
 				if NETWORK.NETWORK_IS_SESSION_STARTED() then
 					for pid = 0, 31 do
@@ -1838,51 +1946,17 @@
 					end
 				else
 					Assistant("> Current Session Status:\n\nSession Broken: False\nFlags: None", colors.black)
-				end	end)	
-			MX.action(miscoptions, "Clear Everything", {"cleanse"}, "Warning: It really clears everything.", function()
-				local cleanse_entitycount = 0
-				for _, ped in pairs(entities.get_all_peds_as_handles()) do
-					if ped ~= players.user_ped() and not PED.IS_PED_A_PLAYER(ped) then
-						entities.delete_by_handle(ped)
-						cleanse_entitycount += 1
-					end
-				end
-				--util.toast("Cleared " .. cleanse_entitycount .. " Peds")
-				cleanse_entitycount = 0
-				for _, veh in ipairs(entities.get_all_vehicles_as_handles()) do
-					entities.delete_by_handle(veh)
-					cleanse_entitycount += 1
-					util.yield()
-				end
-				--util.toast("Cleared ".. cleanse_entitycount .." Vehicles")
-				cleanse_entitycount = 0
-				for _, object in pairs(entities.get_all_objects_as_handles()) do
-					entities.delete_by_handle(object)
-					cleanse_entitycount += 1
-				end
-				--util.toast("Cleared " .. cleanse_entitycount .. " Objects")
-				cleanse_entitycount = 0
-				for _, pickup in pairs(entities.get_all_pickups_as_handles()) do
-					entities.delete_by_handle(pickup)
-					cleanse_entitycount += 1
-				end
-				--util.toast("Cleared " .. cleanse_entitycount .. " Pickups")
-				local temp = memory.alloc(4)
-				for i = 0, 100 do
-					memory.write_int(temp, i)
-					PHYSICS.DELETE_ROPE(temp)
-				end
-				--util.toast("Cleared All Ropes")
-				local pos = ENTITY.GET_ENTITY_COORDS(players.user_ped())
-				MISC.CLEAR_AREA_OF_PROJECTILES(pos.x, pos.y, pos.z, 400, 0)
-				Assistant("> I have removed everything from your area.",colors.green)
-				end)
+				end	end)
 		settings = MX.list(MX.my_root(), "> Settings", {}, "", function(); end)
 			MX.divider(settings, "---> Settings <---")
 			MX.action(settings, "Restart Script", {}, "Restarts the script to clean the errors", function()
 				util.restart_script()end)
-			MX.divider(settings, "[Version: "..MXVersion.."]")
-			MX.divider(settings, "[Created by xX-LulzSecC4t-Xx]")
+		credits = MX.list(MX.my_root(), "> Credits", {}, "", function(); end)
+			MX.divider(credits, "---> xX-LulzSecC4t-Xx <---")
+			MX.hyperlink(credits, "GitHub", "https://github.com/xX-LulzSecC4t-Xx")
+			MX.hyperlink(credits, "Instagram", "https://www.instagram.com/theskillcat/")
+			MX.hyperlink(credits, "Youtube", "https://www.youtube.com/channel/UC3VLV_wgIwbikbVbdT9SCqg?view_as=subscriber")
+			MX.hyperlink(credits, "GTA5Mods", "https://de.gta5-mods.com/users/Th3Sk1llC4tHD")
 		MX.toggle(MX.my_root(), "Bail On Admin Join", {}, "", function(on)
 				if on then
 					bailOnAdminJoin = on
@@ -2273,19 +2347,19 @@
 					util.trigger_script_event(1 << pid, {-555356783, pid, math.random(1, 32), 32, NETWORK.NETWORK_HASH_FROM_PLAYER_HANDLE(pid), 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0})
 					util.yield(1000)end)	
 				soundspam = MX.list(trolling, "> Sound Spam", {}, "")
-				MX.toggle_loop(soundspam, "SMS Spam", {}, "", function()
-					util.trigger_script_event(1 << pid, {1670832796, pid, math.random(-2147483647, 2147483647)})end)
-				MX.toggle_loop(soundspam, "Interior Invite", {}, "", function()
-					util.trigger_script_event(1 << pid, {1111927333, pid, math.random(1, 6)})end)
-				MX.toggle_loop(soundspam, "Invite Notification", {}, "", function()
-					util.trigger_script_event(1 << pid, {-668341698, pid, math.random(1, 150), -1, -1})end)
-				MX.toggle_loop(soundspam, "Collected Checkpoint", {}, "", function()
-					util.trigger_script_event(1 << pid, {-1529596656, pid, -547323955, 0, 0, 0, 0, 0, 0, 0, pid, 0, 0, 0})
-					util.yield(25)end)
-				MX.toggle_loop(soundspam, "Character Notification", {}, "", function()
-					util.trigger_script_event(1 << pid, {-634789188, pid, math.random(0, 178), 0, 0, 0})end)
-				MX.toggle_loop(soundspam, "Error Notification", {}, "", function()
-					util.trigger_script_event(1 << pid, {-1251171789, pid, math.random(-2147483647, 2147483647)})end)
+					MX.toggle_loop(soundspam, "SMS Spam", {}, "", function()
+						util.trigger_script_event(1 << pid, {1670832796, pid, math.random(-2147483647, 2147483647)})end)
+					MX.toggle_loop(soundspam, "Interior Invite", {}, "", function()
+						util.trigger_script_event(1 << pid, {1111927333, pid, math.random(1, 6)})end)
+					MX.toggle_loop(soundspam, "Invite Notification", {}, "", function()
+						util.trigger_script_event(1 << pid, {-668341698, pid, math.random(1, 150), -1, -1})end)
+					MX.toggle_loop(soundspam, "Collected Checkpoint", {}, "", function()
+						util.trigger_script_event(1 << pid, {-1529596656, pid, -547323955, 0, 0, 0, 0, 0, 0, 0, pid, 0, 0, 0})
+						util.yield(25)end)
+					MX.toggle_loop(soundspam, "Character Notification", {}, "", function()
+						util.trigger_script_event(1 << pid, {-634789188, pid, math.random(0, 178), 0, 0, 0})end)
+					MX.toggle_loop(soundspam, "Error Notification", {}, "", function()
+						util.trigger_script_event(1 << pid, {-1251171789, pid, math.random(-2147483647, 2147483647)})end)
 				MX.divider(trolling, "---> PVP Options <---")
 				MX.action(trolling, "Disable Ghost", {"disghost"}, "", function(on)
 					Assistant("> Please wait, while I transfer the bounty.\n\n> Target: "..PLAYER.GET_PLAYER_NAME(pid), colors.blue)
@@ -2361,7 +2435,7 @@
 		util.on_stop(function()
 			Assistant("Bye "..SOCIALCLUB._SC_GET_NICKNAME().."!!!", colors.pink)end)
 		-- (Buttom Text)
-			MX.divider(MX.my_root(), "---> Script successfully loaded! <---")
+			MX.divider(MX.my_root(), "---> Version: "..MXVersion.." <---")
 
 	-- {End Script}
 		util.create_tick_handler(function()
