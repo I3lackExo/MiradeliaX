@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.13
+	local MXVersion = 1.2
 	-- {Update Script}
 		local response = false
 			async_http.init("raw.githubusercontent.com", "/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
@@ -1954,6 +1954,7 @@
 		credits = MX.list(MX.my_root(), "> Credits", {}, "", function(); end)
 			MX.divider(credits, "---> xX-LulzSecC4t-Xx <---")
 			MX.hyperlink(credits, "GitHub", "https://github.com/xX-LulzSecC4t-Xx")
+			MX.hyperlink(credits, "Discord", "https://discord.gg/bHpvhazv7T")
 			MX.hyperlink(credits, "Instagram", "https://www.instagram.com/theskillcat/")
 			MX.hyperlink(credits, "Youtube", "https://www.youtube.com/channel/UC3VLV_wgIwbikbVbdT9SCqg?view_as=subscriber")
 			MX.hyperlink(credits, "GTA5Mods", "https://de.gta5-mods.com/users/Th3Sk1llC4tHD")
