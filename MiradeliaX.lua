@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.3
+	local MXVersion = 1.4
 	-- {Update Script}
 		local response = false
 			async_http.init("raw.githubusercontent.com", "/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
@@ -1340,7 +1340,7 @@
 						WEAPON.SET_CURRENT_PED_WEAPON(players.user_ped(), MISC.GET_HASH_KEY("WEAPON_UNARMED"), true)
 						TASK.TASK_PLAY_ANIM(players.user_ped(), dict, name, 8.0, 8.0, -1, 1, 0, false, false, false)end)
 			MX.divider(selfoptions, "---> Bounty Remover <---")
-			MX.action(selfoptions, "Remove Bounty", {"rbounty"}, "", function(on)
+			MX.action(selfoptions, "Remove Bounty", {"ptbounty"}, "", function(on)
 				if memory.read_int(memory.script_global(1835502 + 4 + 1 + (players.user() * 3))) == 1 then 
 					memory.write_int(memory.script_global(2815059 + 1856 + 17), -1)
 					memory.write_int(memory.script_global(2359296 + 1 + 5149 + 13), 2880000)
@@ -1530,7 +1530,7 @@
 					PED.SET_ENABLE_HANDCUFFS(PLAYER.PLAYER_PED_ID(), false)
 				end
 				util.yield()end)
-			MX.slider(vehicleoptions, "Change seat", {"switchseat"}, "DriverSeat = -1 Passenger = 0 Left Rear = 1 RightRear = 2", -1, 2, -1, 1, function(seatnumber)
+			MX.slider(vehicleoptions, "Change seat", {}, "DriverSeat = -1 Passenger = 0 Left Rear = 1 RightRear = 2", -1, 2, -1, 1, function(seatnumber)
 					local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(players.user())
 					local vehicle = entities.get_user_vehicle_as_handle()
 					PED.SET_PED_INTO_VEHICLE(ped, vehicle, seatnumber)end)
@@ -1571,7 +1571,7 @@
 						local coords = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, i, 0.0)
 						FIRE.ADD_EXPLOSION(coords['x'], coords['y'], coords['z'], 67, 0.0, false, false, 0.0, true)
 					end end)
-				MX.action(funnyoptions, "Massive shit", {"mshit"}, "Make a massive shit", function()
+				MX.action(funnyoptions, "Massive shit", {}, "Make a massive shit", function()
 					local c = ENTITY.GET_ENTITY_COORDS(players.user_ped())
 					c.z = c.z -1
 					while not STREAMING.HAS_ANIM_DICT_LOADED(agroup) do 
@@ -1581,7 +1581,7 @@
 					TASK.TASK_PLAY_ANIM(player, agroup, anim1, 8.0, 8.0, 3000, 0, 0, false, false, false)
 					util.yield(1000)
 					entities.create_object(mshit, c)end)
-				MX.action(funnyoptions, "Normal shit", {"nshit"}, "Make a normale sized shit", function()
+				MX.action(funnyoptions, "Normal shit", {}, "Make a normale sized shit", function()
 					local c = ENTITY.GET_ENTITY_COORDS(players.user_ped())
 					c.z = c.z -1
 					while not STREAMING.HAS_ANIM_DICT_LOADED(agroup) do 
@@ -1601,7 +1601,7 @@
 					TASK.TASK_PLAY_ANIM(player, agroup, anim1, 8.0, 8.0, 3000, 0, 0, false, false, false)
 					util.yield(1000)
 					entities.create_object(mshit2, c)end)
-				MX.action(funnyoptions, "SoMe sOdA?", {"ashit"}, "", function()
+				MX.action(funnyoptions, "SoMe sOdA?", {}, "", function()
 					local c = ENTITY.GET_ENTITY_COORDS(players.user_ped())
 					c.z = c.z -1
 					while not STREAMING.HAS_ANIM_DICT_LOADED(agroup) do 
@@ -1683,7 +1683,7 @@
 					break
 				end
 				util.toast("Cleared "..tostring(counter).." "..name:lower()..".")end)
-			MX.action(miscoptions, "Clear Everything", {"cleanse"}, "Warning: It really clears everything.", function()
+			MX.action(miscoptions, "Clear Everything", {"ptclean"}, "Warning: It really clears everything.", function()
 				local cleanse_entitycount = 0
 				for _, ped in pairs(entities.get_all_peds_as_handles()) do
 					if ped ~= players.user_ped() and not PED.IS_PED_A_PLAYER(ped) then
@@ -1868,7 +1868,7 @@
 				end	end)
 		settings = MX.list(MX.my_root(), "> Settings", {}, "", function(); end)
 			MX.divider(settings, "---> Settings <---")
-			MX.action(settings, "Restart Script", {}, "Restarts the script to clean the errors", function()
+			MX.action(settings, "Restart Script", {"ptrestart"}, "Restarts the script to clean the errors", function()
 				util.restart_script()end)
 		credits = MX.list(MX.my_root(), "> Credits", {}, "", function(); end)
 			MX.divider(credits, "---> xX-LulzSecC4t-Xx <---")
@@ -1952,7 +1952,7 @@
 				if vehicle then	
 					ENTITY.SET_ENTITY_INVINCIBLE(vehicle, false) 
 				end end)
-			MX.toggle_loop(MX.player_root(pid), "Remove Godmode", {"removegm"}, "removes the players godmode by forcing camera forward. blocked by most menus", function()
+			MX.toggle_loop(MX.player_root(pid), "Remove Godmode", {}, "removes the players godmode by forcing camera forward. blocked by most menus", function()
 				if not players.exists(pid) then
 					util.stop_thread()
 				end
@@ -2281,13 +2281,13 @@
 					MX.toggle_loop(soundspam, "Error Notification", {}, "", function()
 						util.trigger_script_event(1 << pid, {-1251171789, pid, math.random(-2147483647, 2147483647)})end)
 				MX.divider(trolling, "---> PVP Options <---")
-				MX.action(trolling, "Disable Ghost", {"disghost"}, "", function(on)
+				MX.action(trolling, "Disable Ghost", {"ptghost"}, "", function(on)
 					Assistant("> Please wait, while I transfer the bounty.\n\n> Target: "..PLAYER.GET_PLAYER_NAME(pid), colors.blue)
 					MX.trigger_commands("bounty"..PLAYER.GET_PLAYER_NAME(pid).." 1337")
 					util.yield(10500)
 					Assistant("> Transfer completed.\n\n> Target: "..PLAYER.GET_PLAYER_NAME(pid), colors.blue)end)
 				MX.divider(trolling, "---> Tryharder Trolling <---")
-				MX.action(trolling, "Remove Explosive Sniper", {}, "", function(on)
+				MX.action(trolling, "Remove Explosive Sniper", {"ptexplo"}, "", function(on)
 					WEAPON.REMOVE_WEAPON_FROM_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0xA914799)
 					WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0xA914799)
 					Assistant("> I removed explosive sniper from " .. PLAYER.GET_PLAYER_NAME(pid), colors.green)end)
