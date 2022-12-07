@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.4
+	local MXVersion = 1.5
 	-- {Update Script}
 		local response = false
 			async_http.init("raw.githubusercontent.com", "/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
@@ -943,17 +943,6 @@
 					if util.is_session_started() then
 					memory.write_float(memory.script_global(262145 + 30176), 200000.0)
 					end end)
-				MX.toggle_loop(pvpoptions, "Max Auto-Aim Range", {""}, "", function()
-					PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 99999999.0)end)
-				MX.divider(pvpoptions, "---> Weapon Buffs <---")
-				MX.toggle(pvpoptions, "Better Precision Rifle", {}, "", function(on_toggle)
-					if on_toggle then
-						MX.trigger_commands("damagemultiplier".." ".."1.60")
-						MX.trigger_commands("rangemultiplier".." ".."1.50")
-					else
-						MX.trigger_commands("damagemultiplier".." ".."1.00")
-						MX.trigger_commands("rangemultiplier".." ".."1.00")
-					end end)
 				MX.divider(pvpoptions, "---> Request's <---")
 				MX.action(pvpoptions, "Ballistic Armor", {}, "", function(on)
 					 SET_INT_GLOBAL(2815059 + 884, 1)end)
@@ -1421,7 +1410,7 @@
 						util.yield(250)
 					end
 				end end)
-			MX.divider(onlineoptions, "---> Modder Detection <---")
+			MX.divider(onlineoptions, "---> UA Detection <---")
 			MX.action(onlineoptions,"Check Stats", {}, "Lobby check",function(on)
 					for pid = 0, 32 do
 						local rp = players.get_rank(pid)
@@ -1467,6 +1456,18 @@
 							end)
 						end
 					end
+				MX.divider(weaponsoptions, "---> Aim Range Buff <---")
+				MX.toggle_loop(weaponsoptions, "Max Auto-Aim Range", {""}, "", function()
+					PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 99999999.0)end)
+				MX.divider(weaponsoptions, "---> Weapon Buffs <---")
+				MX.toggle(weaponsoptions, "Better Precision Rifle", {}, "", function(on_toggle)
+					if on_toggle then
+						MX.trigger_commands("damagemultiplier".." ".."1.60")
+						MX.trigger_commands("rangemultiplier".." ".."1.50")
+					else
+						MX.trigger_commands("damagemultiplier".." ".."1.00")
+						MX.trigger_commands("rangemultiplier".." ".."1.00")
+					end end)
 		vehicleoptions = MX.list(MX.my_root(), "> Vehicle Options", {}, "", function(); end)
 			MX.divider(vehicleoptions, "---> Zeromenu Drifting <---")
 			MX.action(vehicleoptions, "Drift", {}, "", function(toggle)
@@ -1545,13 +1546,13 @@
 					end end)
 		cameraoptions = MX.list(MX.my_root(), "> Camera Options", {}, "", function(); end)
 			MX.divider(cameraoptions, "---> Camera Options <---")
-			MX.toggle(cameraoptions, "FOV Tryhard", {}, "", function(on_toggle)
+			MX.toggle(cameraoptions, "FOV Tryhard FP", {}, "", function(on_toggle)
 					if on_toggle then
 						MX.trigger_commands("fovfponfoot".." ".."75")
 					else
 						MX.trigger_commands("fovfponfoot".." ".."-1")
 					end end)
-			MX.toggle(cameraoptions, "FOV Dogfight", {}, "", function(on_toggle)
+			MX.toggle(cameraoptions, "FOV Dogfight FP", {}, "", function(on_toggle)
 					if on_toggle then
 						MX.trigger_commands("fovfpinveh".." ".."75")
 					else
@@ -2293,16 +2294,16 @@
 					Assistant("> I removed explosive sniper from " .. PLAYER.GET_PLAYER_NAME(pid), colors.green)end)
 			crash = MX.list(MX.player_root(pid), "> Kicks & Crashes", {}, "", function(); end)
 				MX.divider(crash, "---> Basic Kicks <---")
-				MX.action(crash, "Host-Kick", {"pthost"}, "Host Kick. Command: pthost", function()
+				MX.action(crash, "Host-Kick", {"pthost"}, "Host Kick.", function()
 					if NETWORK.NETWORK_IS_HOST() then
 						NETWORK.NETWORK_SESSION_KICK_PLAYER(pid)
 					end end)
-				MX.action(crash, "Network Bail", {"ptbail"}, "Network Bail. Command: ptbail", function()
+				MX.action(crash, "Network Bail", {"ptbail"}, "Network Bail.", function()
 					util.trigger_script_event(1 << pid, {1674887089, players.user(), memory.read_int(memory.script_global(1892703 + 1 + (pid * 599) + 510))})end)
-				MX.divider(crash, "---> Another Kicks/Crashes <---")
-				MX.action(crash, "Kick", {"ptkick"}, "Normal kick. Command: ptkick", function()
-					util.trigger_script_event(1 << pid, {111242367, pid, -210634234})end)
-				MX.action(crash, "UwU Crash", {"ptuwu"}, "D0 Crash prevented by Stand. (Blocked by most PTs) Command: ptuwu", function()
+				MX.divider(crash, "---> Crashes <---")
+				--[[MX.action(crash, "Kick", {"ptkick"}, "Normal kick. Command: ptkick", function()
+					util.trigger_script_event(1 << pid, {111242367, pid, -210634234})end)]]
+				MX.action(crash, "UwU Crash", {"ptuwu"}, "D0 Crash prevented by Stand. (Blocked by most PTs)", function()
 					local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
 					local hakuchou = util.joaat("hakuchou2")
     
@@ -2315,8 +2316,7 @@
 					VEHICLE.SET_VEHICLE_MOD(vehicle, 34, 3, false)
 					util.yield(1000)
 					entities.delete_by_handle(vehicle)end)
-				MX.divider(crash, "---> OP Kicks/Crashes <---")
-				MX.action(crash, "Mother Nature Crash", {"ptmncrash"}, "Can crash 2Take1, Cherax etc. ptmncrash", function()
+				MX.action(crash, "Mother Nature Crash", {"ptmncrash"}, "Can crash 2Take1, Cherax etc.", function()
 					local user = PLAYER.GET_PLAYER_PED(players.user())
 					local model = util.joaat("h4_prop_bush_mang_ad")
 					local pos = players.get_position(pid)
