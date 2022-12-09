@@ -13,17 +13,17 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.5
+	local MXVersion = 1.6
 	-- {Update Script}
 		local response = false
-			async_http.init("raw.githubusercontent.com", "/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
+			async_http.init("raw.githubusercontent.com", "/I3lackExo/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
 				currentVer = tonumber(output)
 				response = true
 				if MXVersion ~= currentVer then
 					util.show_corner_help("~h~~p~New MiradeliaX version is available!!!")
 					--util.toast("New MiradeliaX version is available!!!")
 					menu.action(menu.my_root(), "Update MiradeliaX", {}, "", function()
-						async_http.init("raw.githubusercontent.com","/xX-LulzSecC4t-Xx/MiradeliaX/main/MiradeliaX.lua",function(a)
+						async_http.init("raw.githubusercontent.com","/I3lackExo/MiradeliaX/main/MiradeliaX.lua",function(a)
 							local err = select(2,load(a))
 							if err then
 								util.show_corner_help("~r~Script failed to download. Please try again later. If this continues to happen then manually update via github.")
@@ -2303,7 +2303,7 @@
 				MX.divider(crash, "---> Crashes <---")
 				--[[MX.action(crash, "Kick", {"ptkick"}, "Normal kick. Command: ptkick", function()
 					util.trigger_script_event(1 << pid, {111242367, pid, -210634234})end)]]
-				MX.action(crash, "UwU Crash", {"ptuwu"}, "D0 Crash prevented by Stand. (Blocked by most PTs)", function()
+				MX.action(crash, "Broken World Crash", {"ptbwc"}, "The crash remains after leaving the lobby.", function()
 					local pos = ENTITY.GET_ENTITY_COORDS(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid))
 					local hakuchou = util.joaat("hakuchou2")
     
@@ -2316,12 +2316,20 @@
 					VEHICLE.SET_VEHICLE_MOD(vehicle, 34, 3, false)
 					util.yield(1000)
 					entities.delete_by_handle(vehicle)end)
+				MX.action(crash, "AI Generated Crash", {"ptai"}, "", function()
+					local player_position = players.get_position(pid)
+					local joaat_hash = util.joaat("prop_fragtest_cnst_04")
+					util.request_model(joaat_hash)
+					local object_handle = entities.create_object(joaat_hash, player_position)
+					OBJECT.BREAK_OBJECT_FRAGMENT_CHILD(object_handle, 3, false)
+					util.yield(1000)
+					entities.delete_by_handle(object_handle)end)
 				MX.action(crash, "Mother Nature Crash", {"ptmncrash"}, "Can crash 2Take1, Cherax etc.", function()
 					local user = PLAYER.GET_PLAYER_PED(players.user())
 					local model = util.joaat("h4_prop_bush_mang_ad")
 					local pos = players.get_position(pid)
 					local oldPos = players.get_position(players.user())
-					BlockSyncs(pid, function() -- blocking outgoing syncs to prevent the lobby from crashing :5head:
+					BlockSyncs(pid, function()
 						util.yield(100)
 						ENTITY.SET_ENTITY_VISIBLE(user, false)
 						ENTITY.SET_ENTITY_COORDS_NO_OFFSET(user, pos.x, pos.y, pos.z, false, false, false)
@@ -2332,9 +2340,9 @@
 						util.yield(2500)
 						TASK.CLEAR_PED_TASKS_IMMEDIATELY(user)
 						for i = 1, 5 do
-							util.spoof_script("freemode", SYSTEM.WAIT) -- preventing wasted screen
+							util.spoof_script("freemode", SYSTEM.WAIT)
 						end
-						ENTITY.SET_ENTITY_HEALTH(user, 0) -- killing ped because it will still crash others until you die (clearing tasks doesnt seem to do much)
+						ENTITY.SET_ENTITY_HEALTH(user, 0)
 						NETWORK.NETWORK_RESURRECT_LOCAL_PLAYER(oldPos.x, oldPos.y, oldPos.z, 0, false, false, 0)
 						ENTITY.SET_ENTITY_VISIBLE(user, true)
 					end)end) end
