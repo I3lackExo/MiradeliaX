@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.6
+	local MXVersion = 1.7
 	-- {Update Script}
 		local response = false
 			async_http.init("raw.githubusercontent.com", "/I3lackExo/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
