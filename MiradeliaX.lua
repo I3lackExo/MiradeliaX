@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.7
+	local MXVersion = 1.6
 	-- {Update Script}
 		local response = false
 			async_http.init("raw.githubusercontent.com", "/I3lackExo/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
@@ -917,6 +917,7 @@
 				return int_to_uint(ENTITY.GET_ENTITY_MODEL(veh))end}
 	
 	-- {Main Script Code}
+		util.toast("WARNING: Codes were taken from other scripts and are therefore not my codes. DO NOT PUBLISH THE SCRIPT!")
 		MX.divider(MX.my_root(), "~~~> "..MXName.." <~~~")
 		selfoptions = MX.list(MX.my_root(), "> Self Options", {}, "", function(); end)
 			MX.divider(selfoptions, "---> Self Options <---")
@@ -1872,12 +1873,9 @@
 			MX.action(settings, "Restart Script", {"ptrestart"}, "Restarts the script to clean the errors", function()
 				util.restart_script()end)
 		credits = MX.list(MX.my_root(), "> Credits", {}, "", function(); end)
-			MX.divider(credits, "---> xX-LulzSecC4t-Xx <---")
-			MX.hyperlink(credits, "GitHub", "https://github.com/xX-LulzSecC4t-Xx")
+			MX.divider(credits, "---> I3lackExo <---")
+			MX.hyperlink(credits, "GitHub", "https://github.com/I3lackExo")
 			MX.hyperlink(credits, "Discord", "https://discord.gg/bHpvhazv7T")
-			MX.hyperlink(credits, "Instagram", "https://www.instagram.com/theskillcat/")
-			MX.hyperlink(credits, "Youtube", "https://www.youtube.com/channel/UC3VLV_wgIwbikbVbdT9SCqg?view_as=subscriber")
-			MX.hyperlink(credits, "GTA5Mods", "https://de.gta5-mods.com/users/Th3Sk1llC4tHD")
 		MX.toggle(MX.my_root(), "Bail On Admin Join", {}, "", function(on)
 				if on then
 					bailOnAdminJoin = on
