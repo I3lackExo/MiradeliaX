@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.9
+	local MXVersion = 1.7
 	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
