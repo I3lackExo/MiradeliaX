@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.8
+	local MXVersion = 1.7
 	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
@@ -604,8 +604,8 @@
 						end end
 
 	-- {Notification Code}
-		local scriptdir = filesystem.resources_dir()
-				local racDir = scriptdir .. "C4tScripts\\"
+		local scriptdir = filesystem.scripts_dir()
+				local racDir = scriptdir .. "lib\\C4tScripts\\"
 					if not filesystem.exists(racDir) then
 						filesystem.mkdir(racDir)
 					end
@@ -2507,12 +2507,12 @@
 				players.on_join(GenerateFeatures)
 
 	-- {Starting Script Message}
-		Assistant("Hello "..SOCIALCLUB._SC_GET_NICKNAME().."!!!", colors.pink)
+		Assistant("Merry Christmas! @"..SOCIALCLUB._SC_GET_NICKNAME().." :)", colors.pink)
 		Assistant("I'm Mira, your "..MXName.." assistant. I will support you so that you can play safely in GTA Online. Have fun and see you later. ;)", colors.pink)
 
 	-- {Script End Message}
 		util.on_stop(function()
-			Assistant("Bye "..SOCIALCLUB._SC_GET_NICKNAME().."!!!", colors.pink)end)
+			Assistant("Bye @"..SOCIALCLUB._SC_GET_NICKNAME().."!", colors.pink)end)
 		-- (Buttom Text)
 			MX.divider(MX.my_root(), "---> Dev.: "..DevName.." | Version: "..MXVersion.." <---")
 
