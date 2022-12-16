@@ -13,7 +13,8 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.6
+	local MXVersion = 1.7
+	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
 			async_http.init("raw.githubusercontent.com", "/I3lackExo/MiradeliaX/main/MiradeliaXVersion.lua", function(output)
@@ -170,6 +171,39 @@
 					["fAttackDiveMult"] = 0x4C, --disables most of the other axis
 					["fWindMult"] = 0x58, --helps with removing some jitter
 					["fPitchStabilise"] = 0x3C}--idk what it does but it seems to help
+				local station_name = {
+					["Blaine County Radio"] = "RADIO_11_TALK_02", 
+					["The Blue Ark"] = "RADIO_12_REGGAE",
+					["Worldwide FM"] = "RADIO_13_JAZZ",
+					["FlyLo FM"] = "RADIO_14_DANCE_02",
+					["The Lowdown 9.11"] = "RADIO_15_MOTOWN",
+					["The Lab"] = "RADIO_20_THELAB",
+					["Radio Mirror Park"] = "RADIO_16_SILVERLAKE",
+					["Space 103.2"] = "RADIO_17_FUNK",
+					["Vinewood Boulevard Radio"] = "RADIO_18_90S_ROCK",
+					["Blonded Los Santos 97.8 FM"] = "RADIO_21_DLC_XM17",
+					["Los Santos Underground Radio"] = "RADIO_22_DLC_BATTLE_MIX1_RADIO",
+					["iFruit Radio"] = "RADIO_23_DLC_XM19_RADIO",
+					["Motomami Lost Santos"] = "RADIO_19_USER",
+					["Los Santos Rock Radio"] = "RADIO_01_CLASS_ROCK",
+					["Non-Stop-Pop FM"] = "RADIO_02_POP",
+					["Radio Los Santos"] = "RADIO_03_HIPHOP_NEW",
+					["Channel X"] = "RADIO_04_PUNK",
+					["West Coast Talk Radio"] = "RADIO_05_TALK_01",
+					["Rebel Radio"] = "RADIO_06_COUNTRY", 
+					["Soulwax FM"] = "RADIO_07_DANCE_01",
+					["East Los FM"] = "RADIO_08_MEXICAN",
+					["West Coast Classics"] = "RADIO_09_HIPHOP_OLD",
+					["Media Player"] = "RADIO_36_AUDIOPLAYER",
+					["The Music Locker"] = "RADIO_35_DLC_HEI4_MLR",
+					["Kult FM"] = "RADIO_34_DLC_HEI4_KULT",
+					["Still Slipping Los Santos"] = "RADIO_27_DLC_PRHEI4",}
+				local values = {
+					[0] = 0,
+					[1] = 50,
+					[2] = 88,
+					[3] = 160,
+					[4] = 208,}
 			-- Weapon Attachments
 				local last_equipped_weapon = WEAPON.GET_SELECTED_PED_WEAPON(PLAYER.GET_PLAYER_PED(players.user()))
 				local attachments_table = {
@@ -921,32 +955,6 @@
 		MX.divider(MX.my_root(), "~~~> "..MXName.." <~~~")
 		selfoptions = MX.list(MX.my_root(), "> Self Options", {}, "", function(); end)
 			MX.divider(selfoptions, "---> Self Options <---")
-			pvpoptions = MX.list(selfoptions, "> PVP Options", {}, "", function(); end)
-				MX.divider(pvpoptions, "---> PVP Options <---")
-				MX.toggle_loop(pvpoptions, "Reload when rolling", {}, "Reloads your weapon when doing a roll.", function()
-					if TASK.GET_IS_TASK_ACTIVE(players.user_ped(), 4) and PAD.IS_CONTROL_PRESSED(22, 22) and not PED.IS_PED_SHOOTING(players.user_ped())  then --checking if player is rolling
-						util.yield(900)
-						WEAPON.REFILL_AMMO_INSTANTLY(players.user_ped())
-					end end)
-				MX.toggle_loop(pvpoptions, "Refill Snacks & Armours Automatically", {}, "", function(toggled)
-					STAT_SET_INT("NO_BOUGHT_YUM_SNACKS", 30)
-					STAT_SET_INT("NO_BOUGHT_HEALTH_SNACKS", 15)
-					STAT_SET_INT("NO_BOUGHT_EPIC_SNACKS", 15)
-					STAT_SET_INT("NUMBER_OF_ORANGE_BOUGHT", 10)
-					STAT_SET_INT("NUMBER_OF_BOURGE_BOUGHT", 10)
-					STAT_SET_INT("CIGARETTES_BOUGHT", 10)
-					STAT_SET_INT("MP_CHAR_ARMOUR_1_COUNT", 10)
-					STAT_SET_INT("MP_CHAR_ARMOUR_2_COUNT", 10)
-					STAT_SET_INT("MP_CHAR_ARMOUR_3_COUNT", 10)
-					STAT_SET_INT("MP_CHAR_ARMOUR_4_COUNT", 10)
-					STAT_SET_INT("MP_CHAR_ARMOUR_5_COUNT", 10)end)
-				MX.toggle_loop(pvpoptions, "Increase Kosatka Missile Range", {}, "You can use it anywhere in the map now", function()
-					if util.is_session_started() then
-					memory.write_float(memory.script_global(262145 + 30176), 200000.0)
-					end end)
-				MX.divider(pvpoptions, "---> Request's <---")
-				MX.action(pvpoptions, "Ballistic Armor", {}, "", function(on)
-					 SET_INT_GLOBAL(2815059 + 884, 1)end)
 			animation = MX.list(selfoptions, "> Animation", {}, "", function(); end)
 				MX.divider(animation, "---> Animation <---")
 				MX.action(animation, "Stop Animation", {}, "", function()
@@ -1329,6 +1337,27 @@
 						end
 						WEAPON.SET_CURRENT_PED_WEAPON(players.user_ped(), MISC.GET_HASH_KEY("WEAPON_UNARMED"), true)
 						TASK.TASK_PLAY_ANIM(players.user_ped(), dict, name, 8.0, 8.0, -1, 1, 0, false, false, false)end)
+			MX.divider(selfoptions, "---> PVP Options <---")
+				MX.toggle_loop(selfoptions, "Reload when rolling", {}, "Reloads your weapon when doing a roll.", function()
+					if TASK.GET_IS_TASK_ACTIVE(players.user_ped(), 4) and PAD.IS_CONTROL_PRESSED(22, 22) and not PED.IS_PED_SHOOTING(players.user_ped())  then --checking if player is rolling
+						util.yield(900)
+						WEAPON.REFILL_AMMO_INSTANTLY(players.user_ped())
+					end end)
+				MX.toggle_loop(selfoptions, "Refill Snacks & Armours Automatically", {}, "", function(toggled)
+					STAT_SET_INT("NO_BOUGHT_YUM_SNACKS", 30)
+					STAT_SET_INT("NO_BOUGHT_HEALTH_SNACKS", 15)
+					STAT_SET_INT("NO_BOUGHT_EPIC_SNACKS", 15)
+					STAT_SET_INT("NUMBER_OF_ORANGE_BOUGHT", 10)
+					STAT_SET_INT("NUMBER_OF_BOURGE_BOUGHT", 10)
+					STAT_SET_INT("CIGARETTES_BOUGHT", 10)
+					STAT_SET_INT("MP_CHAR_ARMOUR_1_COUNT", 10)
+					STAT_SET_INT("MP_CHAR_ARMOUR_2_COUNT", 10)
+					STAT_SET_INT("MP_CHAR_ARMOUR_3_COUNT", 10)
+					STAT_SET_INT("MP_CHAR_ARMOUR_4_COUNT", 10)
+					STAT_SET_INT("MP_CHAR_ARMOUR_5_COUNT", 10)end)
+				MX.divider(selfoptions, "---> Request's <---")
+				MX.action(selfoptions, "Ballistic Armor", {}, "", function(on)
+					 SET_INT_GLOBAL(2815059 + 884, 1)end)
 			MX.divider(selfoptions, "---> Bounty Remover <---")
 			MX.action(selfoptions, "Remove Bounty", {"ptbounty"}, "", function(on)
 				if memory.read_int(memory.script_global(1835502 + 4 + 1 + (players.user() * 3))) == 1 then 
@@ -1390,6 +1419,72 @@
 						gen_fren_funcs(name)
 						::yes::
 					end
+			protections = MX.list(onlineoptions, "> Protections", {}, "", function(); end)
+				MX.divider(protections, "---> Anti-Mugger <---")
+				menu.toggle_loop(protections, "Myself", {}, "Prevents you from being mugged.", function()
+					if NETWORK.NETWORK_IS_SCRIPT_ACTIVE("am_gang_call", 0, true, 0) then
+						local ped_netId = memory.script_local("am_gang_call", 63 + 10 + (0 * 7 + 1))
+						local sender = memory.script_local("am_gang_call", 287)
+						local target = memory.script_local("am_gang_call", 288)
+						local player = players.user()
+						util.spoof_script("am_gang_call", function()
+							if (memory.read_int(sender) ~= player and memory.read_int(target) == player 
+							and NETWORK.NETWORK_DOES_NETWORK_ID_EXIST(memory.read_int(ped_netId)) 
+							and NETWORK.NETWORK_REQUEST_CONTROL_OF_NETWORK_ID(memory.read_int(ped_netId))) then
+								local mugger = NETWORK.NET_TO_PED(memory.read_int(ped_netId))
+								entities.delete_by_handle(mugger)
+								util.toast("Blocked mugger from " .. players.get_name(memory.read_int(sender)))
+							end
+						end)
+					end end)
+				menu.toggle_loop(protections, "Someone Else", {}, "Prevents others from being mugged.", function()
+					if NETWORK.NETWORK_IS_SCRIPT_ACTIVE("am_gang_call", 0, true, 0) then
+						local ped_netId = memory.script_local("am_gang_call", 63 + 10 + (0 * 7 + 1))
+						local sender = memory.script_local("am_gang_call", 287)
+						local target = memory.script_local("am_gang_call", 288)
+						local player = players.user()
+						util.spoof_script("am_gang_call", function()
+							if memory.read_int(target) ~= player and memory.read_int(sender) ~= player
+							and NETWORK.NETWORK_DOES_NETWORK_ID_EXIST(memory.read_int(ped_netId)) 
+							and NETWORK.NETWORK_REQUEST_CONTROL_OF_NETWORK_ID(memory.read_int(ped_netId)) then
+								local mugger = NETWORK.NET_TO_PED(memory.read_int(ped_netId))
+								entities.delete_by_handle(mugger)
+								util.toast("Blocked mugger sent by " .. players.get_name(memory.read_int(sender)) .. " to " .. players.get_name(memory.read_int(target)))
+							end
+						end)
+					end end)
+				MX.divider(protections, "---> Anti-Beast <---")
+				menu.toggle_loop(protections, "Anti-Beast", {}, "Prevents you from being turned into the beast but will also stop the event for others.", function()
+					if util.spoof_script("am_hunt_the_beast", SCRIPT.TERMINATE_THIS_THREAD) then
+						util.toast("Hunt the beast script detected. Terminating script...")
+					end end)
+				MX.divider(protections, "---> Anti-Cage <---")
+				local alpha = 160
+				menu.slider(protections, "Cage Alpha", {}, "The amount of transparency that objects will have. Set to 0 to auto delete cages.", 0, #values, 0, 1, function(amount)
+					alpha = values[amount]end)
+				menu.toggle_loop(protections, "Enable Anti-Cage", {}, "", function()
+					local user = players.user_ped()
+					local veh = PED.GET_VEHICLE_PED_IS_USING(user)
+					local my_ents = {user, veh}
+					for i, obj_ptr in ipairs(entities.get_all_objects_as_pointers()) do
+						local net_obj = memory.read_long(obj_ptr + 0xd0)
+						if net_obj == 0 or memory.read_byte(net_obj + 0x49) == players.user() then
+							continue
+						end
+						local obj_handle = entities.pointer_to_handle(obj_ptr)
+						CAM.SET_GAMEPLAY_CAM_IGNORE_ENTITY_COLLISION_THIS_UPDATE(obj_handle)
+						for i, data in ipairs(my_ents) do
+							if data ~= 0 and ENTITY.IS_ENTITY_TOUCHING_ENTITY(data, obj_handle) and alpha > 0 then
+								ENTITY.SET_ENTITY_NO_COLLISION_ENTITY(obj_handle, data, false)
+								ENTITY.SET_ENTITY_NO_COLLISION_ENTITY(data, obj_handle, false)
+								ENTITY.SET_ENTITY_ALPHA(obj_handle, alpha, false)
+							end
+							if data ~= 0 and ENTITY.IS_ENTITY_TOUCHING_ENTITY(data, obj_handle) and alpha == 0 then
+								entities.delete_by_handle(obj_handle)
+							end
+						end
+						SHAPETEST.RELEASE_SCRIPT_GUID_FROM_ENTITY(obj_handle)
+					end end)
 			requestoptions = MX.list(onlineoptions, "> Request's", {}, "", function(); end)
 				MX.divider(requestoptions, "---> Request's <---")
 					MX.action(requestoptions, "MOC", {}, "", function(on)
@@ -1402,6 +1497,37 @@
 						SET_INT_GLOBAL(2815059 + 933, 1)end)
 			MX.toggle_loop(onlineoptions, "Disable Text Chat", {}, "", function(toggled)
 				HUD._MULTIPLAYER_CHAT_SET_DISABLED(true)end)
+			MX.divider(onlineoptions, "---> Anti-Orbital Cannon Options <---")
+				local orb_delay = 1000
+				menu.list_select(onlineoptions, "Delay", {}, "The speed in which your name will flicker at for orbital cannon users.", {"Slow", "Medium", "Fast"}, 1, function(index, value)
+				switch value do
+					case "Slow":
+						orb_delay = 1000
+						break
+					case "Medium":
+						orb_delay = 500
+						break
+					case "Fast":
+						orb_delay = 100
+						break
+					end end)
+				local annoy_tgl
+				annoy_tgl = menu.toggle_loop(onlineoptions, "Enable", {}, "", function()
+					--Assistant("I will hide your name in the list of orbital cannon targets.", colors.black)
+					for _, pid in ipairs(players.list(false, true, true)) do
+					   if IsPlayerUsingOrbitalCannon(pid) then
+							NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, true)
+							util.yield(orb_delay)
+							NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, false)
+							util.yield(orb_delay)
+						else
+							NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, false)
+						end
+					end
+				end, function()
+					for _, pid in ipairs(players.list(false, true, true)) do
+						NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, false)
+					end end)
 			MX.divider(onlineoptions, "---> Nightclub Options <---")
 			MX.toggle_loop(onlineoptions, "Nightclub Popularity", {}, "Keeps the Nightclub Popularity at max", function ()
 				if util.is_session_started() then
@@ -1411,22 +1537,6 @@
 						util.yield(250)
 					end
 				end end)
-			MX.divider(onlineoptions, "---> UA Detection <---")
-			MX.action(onlineoptions,"Check Stats", {}, "Lobby check",function(on)
-					for pid = 0, 32 do
-						local rp = players.get_rank(pid)
-						local money = players.get_money(pid)
-						local kd = players.get_kd(pid)
-						if rp == 120 or rp == 720 or rp >= 1000 then
-							Assistant("I think "..PLAYER.GET_PLAYER_NAME(pid) .. " have a modded account.\n\nReason: Modded RP Level", colors.red)
-						end
-						if money >= 500000000 then
-							Assistant("I think "..PLAYER.GET_PLAYER_NAME(pid) .. " have a modded account.\n\nReason: Modded Money", colors.red)
-						end
-						if kd <= -1 or kd >= 50 then
-							Assistant("I think "..PLAYER.GET_PLAYER_NAME(pid) .. " have a modded account.\n\nReason: Modded KD", colors.red)
-						end
-					end end)
 			MX.divider(onlineoptions, "---> IP Tracker <---")
 			MX.hyperlink(onlineoptions, "Open NordVPN API", filesystem.scripts_dir().."lib\\C4tScripts\\Addons\\NordVPN\\NordVPN IP API", "")
 		weaponsoptions = MX.list(MX.my_root(), "> Weapon Options", {}, "", function(); end)
@@ -1460,6 +1570,10 @@
 				MX.divider(weaponsoptions, "---> Aim Range Buff <---")
 				MX.toggle_loop(weaponsoptions, "Max Auto-Aim Range", {""}, "", function()
 					PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 99999999.0)end)
+				MX.toggle_loop(weaponsoptions, "Increase Kosatka Missile Range", {}, "You can use it anywhere in the map now", function()
+					if util.is_session_started() then
+					memory.write_float(memory.script_global(262145 + 30176), 200000.0)
+					end end)
 				MX.divider(weaponsoptions, "---> Weapon Buffs <---")
 				MX.toggle(weaponsoptions, "Better Precision Rifle", {}, "", function(on_toggle)
 					if on_toggle then
@@ -1870,12 +1984,18 @@
 				end	end)
 		settings = MX.list(MX.my_root(), "> Settings", {}, "", function(); end)
 			MX.divider(settings, "---> Settings <---")
-			MX.action(settings, "Restart Script", {"ptrestart"}, "Restarts the script to clean the errors", function()
+			MX.action(settings, "Restart Script", {"ptrestart"}, "Restarts the script to clean the errors.", function()
 				util.restart_script()end)
+			MX.action(settings, "Command list", {}, "List all commands in this script.", function()
+				--Assistant("Restart Script -> !ptrestart\nClean Everything -> !ptclean", colors.black)
+				util.toast("Command List:\n\n> Restart Script -> !ptrestart\n> Clean Everything -> !ptclean\n> Remove Bounty -> !ptbounty\n> Disable Ghost -> !ptghost\n> Remove Expsniper -> !ptexplo\n> Host Kick -> !pthost\n> Network Bail -> !ptbail\n> UWU Crash -> !ptuwu\n> MNCCrash -> !ptmncrash")	
+			end)
 		credits = MX.list(MX.my_root(), "> Credits", {}, "", function(); end)
 			MX.divider(credits, "---> I3lackExo <---")
 			MX.hyperlink(credits, "GitHub", "https://github.com/I3lackExo")
-			MX.hyperlink(credits, "Discord", "https://discord.gg/bHpvhazv7T")
+			MX.hyperlink(credits, "Youtube", "https://www.youtube.com/channel/UC3VLV_wgIwbikbVbdT9SCqg")
+			MX.divider(credits, "---> Support <---")
+			MX.hyperlink(credits, "E-Mail", "mailto:i3lackexo@gmail.com")
 		MX.toggle(MX.my_root(), "Bail On Admin Join", {}, "", function(on)
 				if on then
 					bailOnAdminJoin = on
@@ -2279,6 +2399,35 @@
 						util.trigger_script_event(1 << pid, {-634789188, pid, math.random(0, 178), 0, 0, 0})end)
 					MX.toggle_loop(soundspam, "Error Notification", {}, "", function()
 						util.trigger_script_event(1 << pid, {-1251171789, pid, math.random(-2147483647, 2147483647)})end)
+				local stations = {}
+					for station, name in pairs(station_name) do
+							stations[#stations + 1] = station
+					end
+					menu.list_action(trolling, "> Change Radio Station", {}, "", stations, function(index, value)
+						local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)
+						local pos = players.get_position(players.user())
+						local player_veh = PED.GET_VEHICLE_PED_IS_IN(ped)
+						if not PED.IS_PED_IN_VEHICLE(ped, player_veh, false) then
+							util.toast("Player isn't in a vehicle. :/")
+						return end
+						local radio_name = station_name[value]
+						if PED.IS_PED_IN_ANY_VEHICLE(ped, false) then 
+							if not VEHICLE.ARE_ANY_VEHICLE_SEATS_FREE(player_veh) then
+								util.toast("Failed to change players radio. :/")
+							return end
+							NETWORK.NETWORK_REQUEST_CONTROL_OF_ENTITY(player_veh)
+							if not PED.IS_PED_IN_VEHICLE(players.user_ped(), player_veh, false) then
+								ENTITY.SET_ENTITY_VISIBLE(players.user_ped(), false)
+								menu.trigger_commands("tpveh" .. players.get_name(pid))
+								util.yield(250)
+								AUDIO.SET_VEH_RADIO_STATION(player_veh, radio_name)
+								util.yield(750)
+								ENTITY.SET_ENTITY_COORDS_NO_OFFSET(players.user_ped(), pos, false, false, false)
+							else
+								util.yield(250)
+								AUDIO.SET_VEH_RADIO_STATION(player_veh, radio_name)
+							end
+						end end)
 				MX.divider(trolling, "---> PVP Options <---")
 				MX.action(trolling, "Disable Ghost", {"ptghost"}, "", function(on)
 					Assistant("> Please wait, while I transfer the bounty.\n\n> Target: "..PLAYER.GET_PLAYER_NAME(pid), colors.blue)
@@ -2361,7 +2510,7 @@
 		util.on_stop(function()
 			Assistant("Bye "..SOCIALCLUB._SC_GET_NICKNAME().."!!!", colors.pink)end)
 		-- (Buttom Text)
-			MX.divider(MX.my_root(), "---> Version: "..MXVersion.." <---")
+			MX.divider(MX.my_root(), "---> Dev.: "..DevName.." | Version: "..MXVersion.." <---")
 
 	-- {End Script}
 		util.create_tick_handler(function()
