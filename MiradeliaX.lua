@@ -8,12 +8,12 @@
 -- Welcome to "MiradeliaX"! Dont copy or use it as your script.
 -- Warning: Codes were taken from other scripts and are therefore not my codes. DO NOT PUBLISH THE SCRIPT!
 -- Required: "C:\Users\<Username>\AppData\Roaming\Stand\Lua Scripts\lib\MiradeliaX\Resource_Pack.ytd"
--- Creater: xX-LulzSecC4t-Xx
+-- Creater: I3lackExo
 ----------------------------------------------------------------------------------------------------------
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.7
+	local MXVersion = 1.8
 	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
@@ -604,8 +604,8 @@
 						end end
 
 	-- {Notification Code}
-		local scriptdir = filesystem.scripts_dir()
-				local racDir = scriptdir .. "lib\\C4tScripts\\"
+		local scriptdir = filesystem.resources_dir()
+				local racDir = scriptdir .. "C4tScripts\\"
 					if not filesystem.exists(racDir) then
 						filesystem.mkdir(racDir)
 					end
@@ -836,6 +836,10 @@
 					native_invoker.end_call("701919482C74B5AB")
 					util.yield()
 				end end
+			local function BitTest(bits, place)
+				return (bits & (1 << place)) ~= 0 end
+			local function IsPlayerUsingOrbitalCannon(player)
+				return BitTest(memory.read_int(memory.script_global((2657589 + (player * 466 + 1) + 427))), 0) end -- Global_2657589[PLAYER::PLAYER_ID() /*466*/].f_427), 0
 			local function isHelpMessageBeingDisplayed(label)
 				HUD.BEGIN_TEXT_COMMAND_IS_THIS_HELP_MESSAGE_BEING_DISPLAYED(label)
 				return HUD.END_TEXT_COMMAND_IS_THIS_HELP_MESSAGE_BEING_DISPLAYED(0)
@@ -1499,16 +1503,16 @@
 				HUD._MULTIPLAYER_CHAT_SET_DISABLED(true)end)
 			MX.divider(onlineoptions, "---> Anti-Orbital Cannon Options <---")
 				local orb_delay = 1000
-				menu.list_select(onlineoptions, "Delay", {}, "The speed in which your name will flicker at for orbital cannon users.", {"Slow", "Medium", "Fast"}, 1, function(index, value)
+				menu.list_select(onlineoptions, "Delay", {}, "The speed in which your name will flicker at for orbital cannon users.", {"Slow", "Medium", "Fast"}, 3, function(index, value)
 				switch value do
 					case "Slow":
-						orb_delay = 1000
+						orb_delay = 100
 						break
 					case "Medium":
 						orb_delay = 500
 						break
 					case "Fast":
-						orb_delay = 100
+						orb_delay = 1000
 						break
 					end end)
 				local annoy_tgl
@@ -1516,17 +1520,17 @@
 					--Assistant("I will hide your name in the list of orbital cannon targets.", colors.black)
 					for _, pid in ipairs(players.list(false, true, true)) do
 					   if IsPlayerUsingOrbitalCannon(pid) then
-							NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, true)
+							NETWORK._SET_RELATIONSHIP_TO_PLAYER(pid, true)
 							util.yield(orb_delay)
-							NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, false)
+							NETWORK._SET_RELATIONSHIP_TO_PLAYER(pid, false)
 							util.yield(orb_delay)
 						else
-							NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, false)
+							NETWORK._SET_RELATIONSHIP_TO_PLAYER(pid, false)
 						end
 					end
 				end, function()
 					for _, pid in ipairs(players.list(false, true, true)) do
-						NETWORK.SET_REMOTE_PLAYER_AS_GHOST(pid, false)
+						NETWORK._SET_RELATIONSHIP_TO_PLAYER(pid, false)
 					end end)
 			MX.divider(onlineoptions, "---> Nightclub Options <---")
 			MX.toggle_loop(onlineoptions, "Nightclub Popularity", {}, "Keeps the Nightclub Popularity at max", function ()
