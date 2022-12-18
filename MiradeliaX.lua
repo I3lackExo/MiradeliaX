@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.7
+	local MXVersion = 1.8
 	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
@@ -204,6 +204,15 @@
 					[2] = 88,
 					[3] = 160,
 					[4] = 208,}
+				local function roundDecimals(float, decimals)
+					decimals = 10 ^ decimals
+					return math.floor(float * decimals) / decimals end
+				local orbitalTableCords = {
+					[1] = { x = 330.48312, y = 4827.281, z = -59.368515 },
+					[2] = { x = 327.5724,  y = 4826.48,  z = -59.368515 },
+					[3] = { x = 325.95273, y = 4828.985, z = -59.368515 },
+					[4] = { x = 327.79208, y = 4831.288, z = -59.368515 },
+					[5] = { x = 330.61765, y = 4830.225, z = -59.368515 },}
 			-- Weapon Attachments
 				local last_equipped_weapon = WEAPON.GET_SELECTED_PED_WEAPON(PLAYER.GET_PLAYER_PED(players.user()))
 				local attachments_table = {
@@ -1528,21 +1537,37 @@
 							NETWORK._SET_RELATIONSHIP_TO_PLAYER(pid, false)
 						end
 					end
-				end, function()
-					for _, pid in ipairs(players.list(false, true, true)) do
-						NETWORK._SET_RELATIONSHIP_TO_PLAYER(pid, false)
+					end, function()
+						for _, pid in ipairs(players.list(false, true, true)) do
+							NETWORK._SET_RELATIONSHIP_TO_PLAYER(pid, false)
+						end end)
+				MX.toggle_loop(onlineoptions, "Orbital Cannon Detection", {}, "Tells you when anyone starts using the orbital cannon", function()
+					local playerList = players.list(false, true, true)
+					for i = 1, #playerList do
+						local ped = PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(playerList[i])
+						if TASK.GET_IS_TASK_ACTIVE(ped, 135) and ENTITY.GET_ENTITY_SPEED(ped) == 0 then
+							local pos = NETWORK._NETWORK_GET_PLAYER_COORDS(playerList[i])
+							for j = 1, #orbitalTableCords do
+								if roundDecimals(pos.x, 1) == roundDecimals(orbitalTableCords[j].x, 1) and roundDecimals(pos.y, 1) == roundDecimals(orbitalTableCords[j].y, 1) and roundDecimals(pos.z, 1) == roundDecimals(orbitalTableCords[j].z, 1) then
+									util.toast(players.get_name(playerList[i]) .." ".."is using the orbital cannon")
+								end
+							end
+						end
 					end end)
-			MX.divider(onlineoptions, "---> Nightclub Options <---")
-			MX.toggle_loop(onlineoptions, "Nightclub Popularity", {}, "Keeps the Nightclub Popularity at max", function ()
-				if util.is_session_started() then
-					local ncpop = math.floor(STAT_GET_INT("CLUB_POPULARITY") / 10)
-					if ncpop < 100 then
-						MX.trigger_commands("clubpopularity 100")
-						util.yield(250)
-					end
+			MX.divider(onlineoptions, "---> Host Options <---")
+			MX.slider(onlineoptions, "Max Players", {}, "Set the max players for the lobby. Only works when host.", 1, 32, 32, 1, function (value)
+				if Stand_internal_script_can_run then
+					NETWORK.NETWORK_SESSION_SET_MATCHMAKING_GROUP_MAX(0, value)
+					--notification.notify("free slots",NETWORK.NETWORK_SESSION_GET_MATCHMAKING_GROUP_FREE(0))
 				end end)
-			MX.divider(onlineoptions, "---> IP Tracker <---")
-			MX.hyperlink(onlineoptions, "Open NordVPN API", filesystem.scripts_dir().."lib\\C4tScripts\\Addons\\NordVPN\\NordVPN IP API", "")
+			MX.slider(onlineoptions, "Max Spectators", {}, "Set the max spectators for the lobby. Only works when host", 0, 2, 2, 1, function (value)
+				if Stand_internal_script_can_run then
+					NETWORK.NETWORK_SESSION_SET_MATCHMAKING_GROUP_MAX(4, value)
+					--Assistant("> Free slots"..NETWORK.NETWORK_SESSION_GET_MATCHMAKING_GROUP_FREE(4),colors.black)
+					--notification.notify("free slots",NETWORK.NETWORK_SESSION_GET_MATCHMAKING_GROUP_FREE(4))
+				end end)
+			--MX.divider(onlineoptions, "---> IP Tracker <---")
+			--MX.hyperlink(onlineoptions, "Open NordVPN API", filesystem.scripts_dir().."lib\\C4tScripts\\Addons\\NordVPN\\NordVPN IP API", "")
 		weaponsoptions = MX.list(MX.my_root(), "> Weapon Options", {}, "", function(); end)
 			MX.divider(weaponsoptions, "---> Weapon Options <---")
 			weaponattachments = MX.list(weaponsoptions, "> Weapon Attachment Manager", {}, "", function(); end)
@@ -1574,10 +1599,10 @@
 				MX.divider(weaponsoptions, "---> Aim Range Buff <---")
 				MX.toggle_loop(weaponsoptions, "Max Auto-Aim Range", {""}, "", function()
 					PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 99999999.0)end)
-				MX.toggle_loop(weaponsoptions, "Increase Kosatka Missile Range", {}, "You can use it anywhere in the map now", function()
+				--[[MX.toggle_loop(weaponsoptions, "Increase Kosatka Missile Range", {}, "You can use it anywhere in the map now", function()
 					if util.is_session_started() then
 					memory.write_float(memory.script_global(262145 + 30176), 200000.0)
-					end end)
+					end end)]]
 				MX.divider(weaponsoptions, "---> Weapon Buffs <---")
 				MX.toggle(weaponsoptions, "Better Precision Rifle", {}, "", function(on_toggle)
 					if on_toggle then
@@ -1741,6 +1766,15 @@
 					PAD._SET_CONTROL_NORMAL(2, 201, 1) --bet
 				else
 					PAD._SET_CONTROL_NORMAL(2, 203, 1) --pass
+				end end)
+			MX.divider(miscoptions, "---> Nightclub Options <---")
+			MX.toggle_loop(miscoptions, "Nightclub Popularity", {}, "Keeps the Nightclub Popularity at max", function ()
+				if util.is_session_started() then
+					local ncpop = math.floor(STAT_GET_INT("CLUB_POPULARITY") / 10)
+					if ncpop < 100 then
+						MX.trigger_commands("clubpopularity 100")
+						util.yield(250)
+					end
 				end end)
 			MX.divider(miscoptions, "---> Lobby Settings <---")	
 			menu.list_action(miscoptions, "Clear All...", {}, "", {"Peds", "Vehicles", "Objects", "Pickups", "Ropes", "Projectiles", "Sounds"}, function(index, name)
@@ -2508,7 +2542,7 @@
 
 	-- {Starting Script Message}
 		Assistant("Merry Christmas! @"..SOCIALCLUB._SC_GET_NICKNAME().." :)", colors.pink)
-		Assistant("I'm Mira, your "..MXName.." assistant. I will support you so that you can play safely in GTA Online. Have fun and see you later. ;)", colors.pink)
+		--Assistant("I'm Mira, your "..MXName.." assistant. I will support you so that you can play safely in GTA Online. Have fun and see you later. ;)", colors.pink)
 
 	-- {Script End Message}
 		util.on_stop(function()
