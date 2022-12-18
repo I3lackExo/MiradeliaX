@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 1.8
+	local MXVersion = 2.0
 	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
@@ -1368,9 +1368,6 @@
 					STAT_SET_INT("MP_CHAR_ARMOUR_3_COUNT", 10)
 					STAT_SET_INT("MP_CHAR_ARMOUR_4_COUNT", 10)
 					STAT_SET_INT("MP_CHAR_ARMOUR_5_COUNT", 10)end)
-				MX.divider(selfoptions, "---> Request's <---")
-				MX.action(selfoptions, "Ballistic Armor", {}, "", function(on)
-					 SET_INT_GLOBAL(2815059 + 884, 1)end)
 			MX.divider(selfoptions, "---> Bounty Remover <---")
 			MX.action(selfoptions, "Remove Bounty", {"ptbounty"}, "", function(on)
 				if memory.read_int(memory.script_global(1835502 + 4 + 1 + (players.user() * 3))) == 1 then 
@@ -1508,6 +1505,8 @@
 						SET_INT_GLOBAL(2815059 + 925, 1)end)
 					MX.action(requestoptions, "Kosatka", {}, "", function(on)
 						SET_INT_GLOBAL(2815059 + 933, 1)end)
+					MX.action(requestoptions, "Ballistic Armor", {}, "", function(on)
+					 SET_INT_GLOBAL(2815059 + 884, 1)end)
 			MX.toggle_loop(onlineoptions, "Disable Text Chat", {}, "", function(toggled)
 				HUD._MULTIPLAYER_CHAT_SET_DISABLED(true)end)
 			MX.divider(onlineoptions, "---> Anti-Orbital Cannon Options <---")
@@ -1549,7 +1548,8 @@
 							local pos = NETWORK._NETWORK_GET_PLAYER_COORDS(playerList[i])
 							for j = 1, #orbitalTableCords do
 								if roundDecimals(pos.x, 1) == roundDecimals(orbitalTableCords[j].x, 1) and roundDecimals(pos.y, 1) == roundDecimals(orbitalTableCords[j].y, 1) and roundDecimals(pos.z, 1) == roundDecimals(orbitalTableCords[j].z, 1) then
-									util.toast(players.get_name(playerList[i]) .." ".."is using the orbital cannon")
+									Assistant("> "..players.get_name(playerList[i]).." is using the orbital cannon.",colors.red)
+									--util.toast(players.get_name(playerList[i]) .." ".."is using the orbital cannon")
 								end
 							end
 						end
@@ -2418,6 +2418,11 @@
 					delsr = MX.list(delweapons, "> Sniper Rifles", {}, "", function(); end)
 					delhw = MX.list(delweapons, "> Heavy Weapons", {}, "", function(); end)
 					delthrowmisc = MX.list(delweapons, "> Throwables/Miscellaneous", {}, "", function(); end)
+				MX.divider(protherstuff, "---> Tryharder Trolling <---")
+					MX.action(protherstuff, "Remove Explosive Sniper", {"ptexplo"}, "", function(on)
+					WEAPON.REMOVE_WEAPON_FROM_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0xA914799)
+					WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0xA914799)
+					Assistant("> I removed explosive sniper from " .. PLAYER.GET_PLAYER_NAME(pid), colors.green)end)
 			trolling = MX.list(MX.player_root(pid), "> Trolling Options", {}, "", function(); end)
 				MX.divider(trolling, "---> Trolling Options <---")
 				MX.toggle_loop(trolling, "Black Screen", {}, "", function()
@@ -2472,11 +2477,6 @@
 					MX.trigger_commands("bounty"..PLAYER.GET_PLAYER_NAME(pid).." 1337")
 					util.yield(10500)
 					Assistant("> Transfer completed.\n\n> Target: "..PLAYER.GET_PLAYER_NAME(pid), colors.blue)end)
-				MX.divider(trolling, "---> Tryharder Trolling <---")
-				MX.action(trolling, "Remove Explosive Sniper", {"ptexplo"}, "", function(on)
-					WEAPON.REMOVE_WEAPON_FROM_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0xA914799)
-					WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0xA914799)
-					Assistant("> I removed explosive sniper from " .. PLAYER.GET_PLAYER_NAME(pid), colors.green)end)
 			crash = MX.list(MX.player_root(pid), "> Kicks & Crashes", {}, "", function(); end)
 				MX.divider(crash, "---> Basic Kicks <---")
 				MX.action(crash, "Host-Kick", {"pthost"}, "Host Kick.", function()
