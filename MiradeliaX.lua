@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 2.0
+	local MXVersion = 2.2
 	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
@@ -153,14 +153,11 @@
 				local invalid_pickup_placement = false
 				local game_server_modify = false
 				local modified_weather = false
-
 				local players_car = entities.get_user_vehicle_as_handle()
 				local carSettings carSettings = {}
 				local kills_ptr = memory.alloc_int()
 				local deaths_ptr = memory.alloc_int()
-
 				local Int_PTR = memory.alloc_int()
-
 				local thrust_offset = 0x8
 				local better_heli_handling_offsets = {
 					["fYawMult"] = 0x18, -- dont remember
@@ -329,6 +326,8 @@
 					["0x54D41361"] = "Default Clip", --Default Clip
 					["0x81786CA9"] = "Extended Clip", --Extended Clip
 					["0x9307D6FA"] = "Suppressor", --Suppressor
+					["0x1663E75E"] = "Default Clip",
+					["0x1E02B7E0"] = "Suppressor",
 					----------------SUBMACHINE-GUNS------------------------
 					["0xCB48AEF0"] = "Default Clip",
 					["0x10E6BA2B"] = "Extended Clip",
@@ -890,6 +889,11 @@
 					return int
 				end
 				return (1 << 32) + int end
+			local function request_anim_dict(dict)
+				while not STREAMING.HAS_ANIM_DICT_LOADED(dict) do
+					STREAMING.REQUEST_ANIM_DICT(dict)
+					util.yield()
+				end end
 			function request_ptfx_asset(asset)
 				local request_time = os.time()
 				STREAMING.REQUEST_NAMED_PTFX_ASSET(asset)
@@ -910,7 +914,7 @@
 						translation, original, langs = data:match("^%[%[%[\"(.-)\",\"(.-)\",.-,.-,.-]],.-,\"(.-)\"")
 						local decoded_text = web_decode(translation)
 						if langs == nil then
-							Assistant("Sorry, i cant translate this message.", colors.black)
+							--Assistant("Sorry, i cant translate this message.", colors.black)
 							return
 						end
 						langs = string.split(langs, '_')
@@ -926,7 +930,8 @@
 						end
 						if from_lang ~= to_lang then
 							if not outgoing then
-								Assistant(players.get_name(pid).." said:\n\n"..decoded_text, colors.black)
+								util.toast(players.get_name(pid).." said:\n\n"..decoded_text)
+								--Assistant(players.get_name(pid).." said:\n\n"..decoded_text, colors.black)
 								players_on_cooldown[pid] = true
 								util.yield(1000)
 								players_on_cooldown[pid] = nil
@@ -1351,6 +1356,8 @@
 						WEAPON.SET_CURRENT_PED_WEAPON(players.user_ped(), MISC.GET_HASH_KEY("WEAPON_UNARMED"), true)
 						TASK.TASK_PLAY_ANIM(players.user_ped(), dict, name, 8.0, 8.0, -1, 1, 0, false, false, false)end)
 			MX.divider(selfoptions, "---> PVP Options <---")
+				MX.toggle(selfoptions, "Cold blooded", {}, "Removes your thermal signature.\nOther players still see it tho.", function(toggle)
+					PED.SET_PED_HEATSCALE_OVERRIDE(players.user_ped(), (toggle and 0 or 1.0))end)
 				MX.toggle_loop(selfoptions, "Reload when rolling", {}, "Reloads your weapon when doing a roll.", function()
 					if TASK.GET_IS_TASK_ACTIVE(players.user_ped(), 4) and PAD.IS_CONTROL_PRESSED(22, 22) and not PED.IS_PED_SHOOTING(players.user_ped())  then --checking if player is rolling
 						util.yield(900)
@@ -1596,6 +1603,12 @@
 							end)
 						end
 					end
+				MX.action(weaponsoptions, "Railgun XM3", {}, "", function(on)
+					WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0xFEA23564)end)
+				MX.action(weaponsoptions, "Candy Cane", {}, "", function(on)
+					WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0x6589186A)end)
+				MX.action(weaponsoptions, "WM 29 Pistol", {}, "", function(on)
+					WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0x1BC4FDB9)end)
 				MX.divider(weaponsoptions, "---> Aim Range Buff <---")
 				MX.toggle_loop(weaponsoptions, "Max Auto-Aim Range", {""}, "", function()
 					PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 99999999.0)end)
@@ -1758,6 +1771,46 @@
 					entities.create_object(ashit, c)end)
 			MX.action(miscoptions, "Custom Fake Banner", {"banner"}, "", function(on_click) MX.show_command_box("banner ") end, function(text)
 				custom_alert(text)end)
+			MX.divider(miscoptions, "---> Firework <---")
+			local placed_firework_boxes = {}
+			menu.action(miscoptions, "Place Firework Box", {}, "", function(click_type)
+				local animlib = 'anim@mp_fireworks'
+				local ptfx_asset = "scr_indep_fireworks"
+				local anim_name = 'place_firework_3_box'
+				local effect_name = "scr_indep_firework_trailburst"
+				request_anim_dict(animlib)
+				local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, 0.52, 0.0)
+				local ped = players.user_ped()
+				ENTITY.FREEZE_ENTITY_POSITION(ped, true)
+				TASK.TASK_PLAY_ANIM(ped, animlib, anim_name, -1, -8.0, 3000, 0, 0, false, false, false)
+				util.yield(1500)
+				local firework_box = entities.create_object(util.joaat('ind_prop_firework_03'), pos, true, false, false)
+				local firework_box_pos = ENTITY.GET_ENTITY_COORDS(firework_box)
+				OBJECT.PLACE_OBJECT_ON_GROUND_PROPERLY(firework_box)
+				ENTITY.FREEZE_ENTITY_POSITION(ped, false)
+				util.yield(1000)
+				ENTITY.FREEZE_ENTITY_POSITION(firework_box, true)
+				placed_firework_boxes[#placed_firework_boxes + 1] = firework_box end)
+			menu.action(miscoptions, "Start Firework", {}, "", function(click_type)
+				if #placed_firework_boxes == 0 then 
+					util.toast("Place some fireworks first!")
+					return 
+				end
+				local ptfx_asset = "scr_indep_fireworks"
+				local effect_name = "scr_indep_firework_trailburst"
+				request_ptfx_asset(ptfx_asset)
+				util.toast("kaboom")
+				for i=1, 50 do
+					for k,box in pairs(placed_firework_boxes) do 
+						GRAPHICS.USE_PARTICLE_FX_ASSET(ptfx_asset)
+						GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY(effect_name, box, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 0.0, 0.0, 0.0)
+						util.yield(100)
+					end
+				end
+				for k,box in pairs(placed_firework_boxes) do 
+					entities.delete_by_handle(box)
+					placed_firework_boxes[box] = nil
+				end end)
 			MX.divider(miscoptions, "---> Casino <---")
 			MX.toggle_loop(miscoptions, "Auto Black Jack", {}, "", function()
 				if not (isHelpMessageBeingDisplayed('BJACK_BET') or isHelpMessageBeingDisplayed('BJACK_TURN') or isHelpMessageBeingDisplayed('BJACK_TURN_D') or isHelpMessageBeingDisplayed('BJACK_TURN_S')) then return end
