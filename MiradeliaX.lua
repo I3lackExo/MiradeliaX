@@ -13,7 +13,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 2.2
+	local MXVersion = 2.1
 	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
@@ -930,8 +930,8 @@
 						end
 						if from_lang ~= to_lang then
 							if not outgoing then
-								util.toast(players.get_name(pid).." said:\n\n"..decoded_text)
-								--Assistant(players.get_name(pid).." said:\n\n"..decoded_text, colors.black)
+								--util.toast(players.get_name(pid).." said:\n\n"..decoded_text)
+								Assistant(players.get_name(pid).." said:\n\n"..decoded_text, colors.black)
 								players_on_cooldown[pid] = true
 								util.yield(1000)
 								players_on_cooldown[pid] = nil
@@ -1489,7 +1489,7 @@
 							continue
 						end
 						local obj_handle = entities.pointer_to_handle(obj_ptr)
-						CAM.SET_GAMEPLAY_CAM_IGNORE_ENTITY_COLLISION_THIS_UPDATE(obj_handle)
+						CAM._DISABLE_CAM_COLLISION_FOR_ENTITY(obj_handle)
 						for i, data in ipairs(my_ents) do
 							if data ~= 0 and ENTITY.IS_ENTITY_TOUCHING_ENTITY(data, obj_handle) and alpha > 0 then
 								ENTITY.SET_ENTITY_NO_COLLISION_ENTITY(obj_handle, data, false)
@@ -1603,12 +1603,6 @@
 							end)
 						end
 					end
-				MX.action(weaponsoptions, "Railgun XM3", {}, "", function(on)
-					WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0xFEA23564)end)
-				MX.action(weaponsoptions, "Candy Cane", {}, "", function(on)
-					WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0x6589186A)end)
-				MX.action(weaponsoptions, "WM 29 Pistol", {}, "", function(on)
-					WEAPON.GIVE_WEAPON_TO_PED(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid), 0x1BC4FDB9)end)
 				MX.divider(weaponsoptions, "---> Aim Range Buff <---")
 				MX.toggle_loop(weaponsoptions, "Max Auto-Aim Range", {""}, "", function()
 					PLAYER.SET_PLAYER_LOCKON_RANGE_OVERRIDE(players.user(), 99999999.0)end)
