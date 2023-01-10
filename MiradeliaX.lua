@@ -18,7 +18,7 @@
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 2.2	
+	local MXVersion = 2.3	
 	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
@@ -57,6 +57,9 @@
 		-- (All Locals)
 			local MX = menu
 			require("lib/C4tScripts/NativesMX")
+			-- IP Logger
+			local IPLogFile = filesystem.scripts_dir() .. "lib\\C4tScripts\\" .. "IP" .. ".log"
+
 			-- Translater
 				local whitelisted_langs = {}
 				local language_codes_by_enum = {
@@ -849,6 +852,24 @@
 					native_invoker.end_call("701919482C74B5AB")
 					util.yield()
 				end end
+			local basePrint = print
+				local function print(...)
+					basePrint(...)
+					local success, result = pcall(function(...)
+						local args = {...}
+						if #args == 0 then
+							return
+						end
+						local currTime = os.date("*t")
+						local file = io.open(IPLogFile, "a")
+						for i=1,#args do
+							file:write(string.format("[%02d-%02d-%02d | %02d:%02d:%02d] %s\n", currTime.day, currTime.month, currTime.year, currTime.hour, currTime.min, currTime.sec, tostring(args[i])))
+						end  
+						file:close()
+					end, ...)
+					if not success then
+						basePrint("Error writing log: " .. result)
+					end end
 			local function BitTest(bits, place)
 				return (bits & (1 << place)) ~= 0 end
 			local function IsPlayerUsingOrbitalCannon(player)
@@ -1578,7 +1599,6 @@
 					--Assistant("> Free slots"..NETWORK.NETWORK_SESSION_GET_MATCHMAKING_GROUP_FREE(4),colors.black)
 					--notification.notify("free slots",NETWORK.NETWORK_SESSION_GET_MATCHMAKING_GROUP_FREE(4))
 				end end)
-			--MX.divider(onlineoptions, "---> IP Tracker <---")
 			--MX.hyperlink(onlineoptions, "Open NordVPN API", filesystem.scripts_dir().."lib\\C4tScripts\\Addons\\NordVPN\\NordVPN IP API", "")
 		weaponsoptions = MX.list(MX.my_root(), "> Weapon Options", {}, "", function(); end)
 			MX.divider(weaponsoptions, "---> Weapon Options <---")
@@ -2195,6 +2215,13 @@
 
 	-- {Playerlist}
 		GenerateFeatures = function(pid)
+			MX.action(MX.player_root(pid), "Copy IP", {}, "", function(on)
+				local ip = players.get_connect_ip(pid)
+				local name = PLAYER.GET_PLAYER_NAME(pid)
+				print("Player: "..name.." / IP: "..string.format("%i.%i.%i.%i", ip >> 24 & 255, ip >> 16 & 255, ip >> 8 & 255, ip & 255))
+				util.copy_to_clipboard(string.format("%i.%i.%i.%i", ip >> 24 & 255, ip >> 16 & 255, ip >> 8 & 255, ip & 255))
+				--util.toast("IP copied to clipboard")
+			end)
 			MX.toggle_loop(MX.player_root(pid), "Give Stealth Vehicle Godmode", {}, "Won't be detected as vehicle godmode by most menus", function(toggled)
 				ENTITY.SET_ENTITY_PROOFS(PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)), true, true, true, true, true, 0, 0, true)
 				end, function() ENTITY.SET_ENTITY_PROOFS(PED.GET_VEHICLE_PED_IS_IN(PLAYER.GET_PLAYER_PED_SCRIPT_INDEX(pid)), false, false, false, false, false, 0, 0, false)
@@ -2204,12 +2231,12 @@
 				if vehicle then	
 					ENTITY.SET_ENTITY_INVINCIBLE(vehicle, false) 
 				end end)
-			MX.toggle_loop(MX.player_root(pid), "Remove Godmode", {}, "removes the players godmode by forcing camera forward. blocked by most menus", function()
+			--[[MX.toggle_loop(MX.player_root(pid), "Remove Godmode", {}, "removes the players godmode by forcing camera forward. blocked by most menus", function()
 				if not players.exists(pid) then
 					util.stop_thread()
 				end
-				util.trigger_script_event(1 << pid, {801199324, pid, 869796886, math.random(0, 9999)})end)
-			MX.action(MX.player_root(pid), "Remove Player Godmode", {}, "Blocked By Most menus", function()
+				util.trigger_script_event(1 << pid, {801199324, pid, 869796886, math.random(0, 9999)})end)]]
+			--[[MX.action(MX.player_root(pid), "Remove Player Godmode", {}, "Blocked By Most menus", function()
 				local playerpos = ENTITY.GET_ENTITY_COORDS(id)
 				playerpos.z = playerpos.z + 3
 
@@ -2234,7 +2261,7 @@
 				ENTITY.ATTACH_ENTITY_TO_ENTITY(vehicle4, vehicle1, 0, 3, 0, 0, 0, 0, 0, 0, false, true, false, 0, true)
 				ENTITY.SET_ENTITY_VISIBLE(vehicle1, false)
 				util.yield(7500)
-				entities.delete_by_handle(vehicle1)end)
+				entities.delete_by_handle(vehicle1)end)]]
 			
 				main = MX.list(MX.player_root(pid), "> Account Boosting", {}, "", function(); end)
 				MX.divider(main, "---> Account Boosting <---")
