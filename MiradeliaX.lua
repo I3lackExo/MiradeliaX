@@ -7,13 +7,18 @@
 ----------------------------------------------------------------------------------------------------------
 -- Welcome to "MiradeliaX"! Dont copy or use it as your script.
 -- Warning: Codes were taken from other scripts and are therefore not my codes. DO NOT PUBLISH THE SCRIPT!
+-- Link: https://forge.plebmasters.de/objects?search=firework
 -- Required: "C:\Users\<Username>\AppData\Roaming\Stand\Lua Scripts\lib\MiradeliaX\Resource_Pack.ytd"
 -- Creater: I3lackExo
 ----------------------------------------------------------------------------------------------------------
+	-- Rocket = ind_prop_firework_01 - scr_indep_firework_starburst - place_firework_1_rocket
+	-- Cone = ind_prop_firework_02 - scr_indep_firework_shotburst - place_firework_2_cylinder
+	-- Box = ind_prop_firework_03 - scr_indep_firework_trailburst - place_firework_3_box
+	-- Fontain = ind_prop_firework_04 - scr_indep_firework_fountain - place_firework_2_cylinder
 
 -- [[MiradeliaX Script]]
 	local MXName = "MiradeliaX"
-	local MXVersion = 2.1
+	local MXVersion = 2.2	
 	local DevName = "I3lackExo"
 	-- {Update Script}
 		local response = false
@@ -803,7 +808,7 @@
 						MX.trigger_commands("historyadd "..name)
 					end)end
 			function PlayerlistFeatures(pid)
-				MX.divider(MX.player_root(pid), "~~~> PsyxhoTxolling <~~~")
+				MX.divider(MX.player_root(pid), "~~~> MiradeliaX <~~~")
 				end
 				for pid = 0,30 do
 					if players.exists(pid) then
@@ -1375,7 +1380,7 @@
 					STAT_SET_INT("MP_CHAR_ARMOUR_3_COUNT", 10)
 					STAT_SET_INT("MP_CHAR_ARMOUR_4_COUNT", 10)
 					STAT_SET_INT("MP_CHAR_ARMOUR_5_COUNT", 10)end)
-			MX.divider(selfoptions, "---> Bounty Remover <---")
+			--[[MX.divider(selfoptions, "---> Bounty Remover <---")
 			MX.action(selfoptions, "Remove Bounty", {"ptbounty"}, "", function(on)
 				if memory.read_int(memory.script_global(1835502 + 4 + 1 + (players.user() * 3))) == 1 then 
 					memory.write_int(memory.script_global(2815059 + 1856 + 17), -1)
@@ -1384,7 +1389,7 @@
 					Assistant("I have removed your bounty.", colors.black)
 				else
 					Assistant("Sorry, but you don't have a bounty right now which I could remove.", colors.red)
-				end end)
+				end end)]]
 		onlineoptions = MX.list(MX.my_root(), "> Online Options", {}, "", function(); end)
 			MX.divider(onlineoptions, "---> Online Options <---")
 			translater = MX.list(onlineoptions, "> Translater", {}, "", function(); end)
@@ -1502,7 +1507,7 @@
 						end
 						SHAPETEST.RELEASE_SCRIPT_GUID_FROM_ENTITY(obj_handle)
 					end end)
-			requestoptions = MX.list(onlineoptions, "> Request's", {}, "", function(); end)
+			--[[requestoptions = MX.list(onlineoptions, "> Request's", {}, "", function(); end)
 				MX.divider(requestoptions, "---> Request's <---")
 					MX.action(requestoptions, "MOC", {}, "", function(on)
 						SET_INT_GLOBAL(2815059 + 913, 1)end)
@@ -1515,7 +1520,7 @@
 					MX.action(requestoptions, "Ballistic Armor", {}, "", function(on)
 					 SET_INT_GLOBAL(2815059 + 884, 1)end)
 			MX.toggle_loop(onlineoptions, "Disable Text Chat", {}, "", function(toggled)
-				HUD._MULTIPLAYER_CHAT_SET_DISABLED(true)end)
+				HUD._MULTIPLAYER_CHAT_SET_DISABLED(true)end)]]
 			MX.divider(onlineoptions, "---> Anti-Orbital Cannon Options <---")
 				local orb_delay = 1000
 				menu.list_select(onlineoptions, "Delay", {}, "The speed in which your name will flicker at for orbital cannon users.", {"Slow", "Medium", "Fast"}, 3, function(index, value)
@@ -1555,8 +1560,8 @@
 							local pos = NETWORK._NETWORK_GET_PLAYER_COORDS(playerList[i])
 							for j = 1, #orbitalTableCords do
 								if roundDecimals(pos.x, 1) == roundDecimals(orbitalTableCords[j].x, 1) and roundDecimals(pos.y, 1) == roundDecimals(orbitalTableCords[j].y, 1) and roundDecimals(pos.z, 1) == roundDecimals(orbitalTableCords[j].z, 1) then
-									Assistant("> "..players.get_name(playerList[i]).." is using the orbital cannon.",colors.red)
-									--util.toast(players.get_name(playerList[i]) .." ".."is using the orbital cannon")
+									--Assistant("> "..players.get_name(playerList[i]).." is using the orbital cannon.",colors.red)
+									util.toast(players.get_name(playerList[i]) .." ".."is using the orbital cannon")
 								end
 							end
 						end
@@ -1631,8 +1636,8 @@
 						VEHICLE._SET_REDUCE_DRIFT_VEHICLE_SUSPENSION(players_car, toggle)end)
 					MX.toggle_loop(vehicleoptions, "Keep car clean", {}, "", function(toggled)
 						VEHICLE.SET_VEHICLE_DIRT_LEVEL(entities.get_user_vehicle_as_handle(), 0.0)end)			
-			MX.divider(vehicleoptions, "---> VStancer [Reloaded] <---")
-			MX.click_slider_float(vehicleoptions, "Suspension Height", {}, "", -100, 100, 0, 1, function(value)
+			--MX.divider(vehicleoptions, "---> VStancer [Reloaded] <---")
+			--[[MX.click_slider_float(vehicleoptions, "Suspension Height", {}, "", -100, 100, 0, 1, function(value)
 				value/=100
 				local player = players.user_ped()
 				local pos = ENTITY.GET_ENTITY_COORDS(player, false)
@@ -1641,7 +1646,7 @@
 				local CAutomobile = entities.handle_to_pointer(VehicleHandle)
 				local CHandlingData = memory.read_long(CAutomobile + 0x0938)
 				memory.write_float(CHandlingData + 0x00D0, value)
-				ENTITY.SET_ENTITY_COORDS_NO_OFFSET(VehicleHandle, pos.x, pos.y, pos.z + 2.8, false, false, false)end)
+				ENTITY.SET_ENTITY_COORDS_NO_OFFSET(VehicleHandle, pos.x, pos.y, pos.z + 2.8, false, false, false)end)]]
 			MX.divider(vehicleoptions, "---> Other Options <---")
 			MX.toggle_loop(vehicleoptions, "Stealth Vehicle Godmode", {}, "Won't be detected as vehicle godmode by most menus", function(toggled)
 					ENTITY.SET_ENTITY_PROOFS(players_car, true, true, true, true, true, 0, 0, true)
@@ -1743,68 +1748,169 @@
 					TASK.TASK_PLAY_ANIM(player, agroup, anim1, 8.0, 8.0, 3000, 0, 0, false, false, false)
 					util.yield(1000)
 					entities.create_object(rshit, c)end)
-				MX.action(funnyoptions, "Big Money Drop", {}, "", function()
-					local c = ENTITY.GET_ENTITY_COORDS(players.user_ped())
-					c.z = c.z -1
-					while not STREAMING.HAS_ANIM_DICT_LOADED(agroup) do 
-						STREAMING.REQUEST_ANIM_DICT(agroup)
-						util.yield()
-					end
-					TASK.TASK_PLAY_ANIM(player, agroup, anim1, 8.0, 8.0, 3000, 0, 0, false, false, false)
-					util.yield(1000)
-					entities.create_object(mshit2, c)end)
-				MX.action(funnyoptions, "SoMe sOdA?", {}, "", function()
-					local c = ENTITY.GET_ENTITY_COORDS(players.user_ped())
-					c.z = c.z -1
-					while not STREAMING.HAS_ANIM_DICT_LOADED(agroup) do 
-						STREAMING.REQUEST_ANIM_DICT(agroup)
-						util.yield()
-					end
-					TASK.TASK_PLAY_ANIM(player, agroup, anim1, 8.0, 8.0, 3000, 0, 0, false, false, false)
-					util.yield(1000)
-					entities.create_object(ashit, c)end)
-			MX.action(miscoptions, "Custom Fake Banner", {"banner"}, "", function(on_click) MX.show_command_box("banner ") end, function(text)
-				custom_alert(text)end)
-			MX.divider(miscoptions, "---> Firework <---")
-			local placed_firework_boxes = {}
-			menu.action(miscoptions, "Place Firework Box", {}, "", function(click_type)
-				local animlib = 'anim@mp_fireworks'
-				local ptfx_asset = "scr_indep_fireworks"
-				local anim_name = 'place_firework_3_box'
-				local effect_name = "scr_indep_firework_trailburst"
-				request_anim_dict(animlib)
-				local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, 0.52, 0.0)
-				local ped = players.user_ped()
-				ENTITY.FREEZE_ENTITY_POSITION(ped, true)
-				TASK.TASK_PLAY_ANIM(ped, animlib, anim_name, -1, -8.0, 3000, 0, 0, false, false, false)
-				util.yield(1500)
-				local firework_box = entities.create_object(util.joaat('ind_prop_firework_03'), pos, true, false, false)
-				local firework_box_pos = ENTITY.GET_ENTITY_COORDS(firework_box)
-				OBJECT.PLACE_OBJECT_ON_GROUND_PROPERLY(firework_box)
-				ENTITY.FREEZE_ENTITY_POSITION(ped, false)
-				util.yield(1000)
-				ENTITY.FREEZE_ENTITY_POSITION(firework_box, true)
-				placed_firework_boxes[#placed_firework_boxes + 1] = firework_box end)
-			menu.action(miscoptions, "Start Firework", {}, "", function(click_type)
-				if #placed_firework_boxes == 0 then 
-					util.toast("Place some fireworks first!")
+			firework = MX.list(miscoptions, "> Firework (PS3)", {}, "", function(); end)
+			MX.divider(firework, "---> Firework Rocket <---")
+			local placed_firework_rockets = {}
+				MX.action(firework, "Place Firework Rocket", {}, "", function(click_type)
+					local animlib = "anim@mp_fireworks"
+					local ptfx_asset = "scr_indep_fireworks"
+					local anim_name = "place_firework_1_rocket"
+					local effect_name = "scr_indep_firework_starburst"
+					local prop_asset = util.joaat("ind_prop_firework_01")
+						request_anim_dict(animlib)
+					local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, 0.52, 0.0)
+					local ped = players.user_ped()
+						ENTITY.FREEZE_ENTITY_POSITION(ped, true)
+						TASK.TASK_PLAY_ANIM(ped, animlib, anim_name, -1, -8.0, 3000, 0, 0, false, false, false)
+						util.yield(1500)
+					local firework_rocket = entities.create_object(prop_asset, pos, true, false, false)
+					local firework_rocket_pos = ENTITY.GET_ENTITY_COORDS(firework_rocket)
+						OBJECT.PLACE_OBJECT_ON_GROUND_PROPERLY(firework_rocket)
+						ENTITY.FREEZE_ENTITY_POSITION(ped, false)
+						util.yield(1000)
+						ENTITY.FREEZE_ENTITY_POSITION(firework_rocket, true)
+						placed_firework_rockets[#placed_firework_rockets + 1] = firework_rocket end)
+				MX.action(firework, "Start", {}, "", function(click_type)
+					if #placed_firework_rockets == 0 then 
+						util.toast("Place some fireworks first!")
 					return 
-				end
-				local ptfx_asset = "scr_indep_fireworks"
-				local effect_name = "scr_indep_firework_trailburst"
-				request_ptfx_asset(ptfx_asset)
-				util.toast("kaboom")
-				for i=1, 50 do
+					end
+					local ptfx_asset = "scr_indep_fireworks"
+					local effect_name = "scr_indep_firework_starburst"
+					request_ptfx_asset(ptfx_asset)
+					for i=1, 1 do
+					for k,rocket in pairs(placed_firework_rockets) do 
+						GRAPHICS.USE_PARTICLE_FX_ASSET(ptfx_asset)
+						GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY(effect_name, rocket, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 0.0, 0.0, 0.0)
+						util.yield(1000)
+					end
+					end
+					for k,rocket in pairs(placed_firework_rockets) do 
+						entities.delete_by_handle(rocket)
+						placed_firework_rockets[rocket] = nil
+					end end)
+			MX.divider(firework, "---> Firework Cone <---")
+			local placed_firework_cones = {}
+				MX.action(firework, "Place Firework Cone", {}, "", function(click_type)
+					local animlib = "anim@mp_fireworks"
+					local ptfx_asset = "scr_indep_fireworks"
+					local anim_name = "place_firework_2_cylinder"
+					local effect_name = "scr_indep_firework_shotburst"
+					local prop_asset = util.joaat("ind_prop_firework_02")
+						request_anim_dict(animlib)
+					local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, 0.52, 0.0)
+					local ped = players.user_ped()
+						ENTITY.FREEZE_ENTITY_POSITION(ped, true)
+						TASK.TASK_PLAY_ANIM(ped, animlib, anim_name, -1, -8.0, 3000, 0, 0, false, false, false)
+						util.yield(1500)
+					local firework_cone = entities.create_object(prop_asset, pos, true, false, false)
+					local firework_cone_pos = ENTITY.GET_ENTITY_COORDS(firework_cone)
+						OBJECT.PLACE_OBJECT_ON_GROUND_PROPERLY(firework_cone)
+						ENTITY.FREEZE_ENTITY_POSITION(ped, false)
+						util.yield(1000)
+						ENTITY.FREEZE_ENTITY_POSITION(firework_cone, true)
+						placed_firework_cones[#placed_firework_cones + 1] = firework_cone end)
+				MX.action(firework, "Start", {}, "", function(click_type)
+					if #placed_firework_cones == 0 then 
+						util.toast("Place some fireworks first!")
+					return 
+					end
+					local ptfx_asset = "scr_indep_fireworks"
+					local effect_name = "scr_indep_firework_shotburst"
+					request_ptfx_asset(ptfx_asset)
+					for i=1, 25 do
+					for k,cone in pairs(placed_firework_cones) do 
+						GRAPHICS.USE_PARTICLE_FX_ASSET(ptfx_asset)
+						GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY(effect_name, cone, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 0.0, 0.0, 0.0)
+						util.yield(800)
+					end
+					end
+					for k,cone in pairs(placed_firework_cones) do 
+						entities.delete_by_handle(cone)
+						placed_firework_cones[cone] = nil
+					end end)
+			MX.divider(firework, "---> Firework Fontain <---")
+			local placed_firework_fontains = {}
+				MX.action(firework, "Place Firework Fontain", {}, "", function(click_type)
+					local animlib = "anim@mp_fireworks"
+					local ptfx_asset = "scr_indep_fireworks"
+					local anim_name = "place_firework_2_cylinder"
+					local effect_name = "scr_indep_firework_fountain"
+					local prop_asset = util.joaat("ind_prop_firework_04")
+						request_anim_dict(animlib)
+					local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, 0.52, 0.0)
+					local ped = players.user_ped()
+						ENTITY.FREEZE_ENTITY_POSITION(ped, true)
+						TASK.TASK_PLAY_ANIM(ped, animlib, anim_name, -1, -8.0, 3000, 0, 0, false, false, false)
+						util.yield(1500)
+					local firework_fontain = entities.create_object(prop_asset, pos, true, false, false)
+					local firework_fontain_pos = ENTITY.GET_ENTITY_COORDS(firework_fontain)
+						OBJECT.PLACE_OBJECT_ON_GROUND_PROPERLY(firework_fontain)
+						ENTITY.FREEZE_ENTITY_POSITION(ped, false)
+						util.yield(1000)
+						ENTITY.FREEZE_ENTITY_POSITION(firework_fontain, true)
+						placed_firework_fontains[#placed_firework_fontains + 1] = firework_fontain end)
+				MX.action(firework, "Start", {}, "", function(click_type)
+					if #placed_firework_fontains == 0 then 
+						util.toast("Place some fireworks first!")
+					return 
+					end
+					local ptfx_asset = "scr_indep_fireworks"
+					local effect_name = "scr_indep_firework_fountain"
+					request_ptfx_asset(ptfx_asset)
+					for i=1, 25 do
+					for k,fontain in pairs(placed_firework_fontains) do 
+						GRAPHICS.USE_PARTICLE_FX_ASSET(ptfx_asset)
+						GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY(effect_name, fontain, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 0.0, 0.0, 0.0)
+						util.yield(600)
+					end
+					end
+					for k,fontain in pairs(placed_firework_fontains) do 
+						entities.delete_by_handle(fontain)
+						placed_firework_fontains[fontain] = nil
+					end end)
+			MX.divider(firework, "---> Firework Box <---")
+			local placed_firework_boxes = {}
+				MX.action(firework, "Place Firework Box", {}, "", function(click_type)
+					local animlib = "anim@mp_fireworks"
+					local ptfx_asset = "scr_indep_fireworks"
+					local anim_name = "place_firework_3_box"
+					local effect_name = "scr_indep_firework_trailburst"
+					local prop_asset = util.joaat("ind_prop_firework_03")
+						request_anim_dict(animlib)
+					local pos = ENTITY.GET_OFFSET_FROM_ENTITY_IN_WORLD_COORDS(players.user_ped(), 0.0, 0.52, 0.0)
+					local ped = players.user_ped()
+						ENTITY.FREEZE_ENTITY_POSITION(ped, true)
+						TASK.TASK_PLAY_ANIM(ped, animlib, anim_name, -1, -8.0, 3000, 0, 0, false, false, false)
+						util.yield(1500)
+					local firework_box = entities.create_object(prop_asset, pos, true, false, false)
+					local firework_box_pos = ENTITY.GET_ENTITY_COORDS(firework_box)
+						OBJECT.PLACE_OBJECT_ON_GROUND_PROPERLY(firework_box)
+						ENTITY.FREEZE_ENTITY_POSITION(ped, false)
+						util.yield(1000)
+						ENTITY.FREEZE_ENTITY_POSITION(firework_box, true)
+						placed_firework_boxes[#placed_firework_boxes + 1] = firework_box end)
+				MX.action(firework, "Start", {}, "", function(click_type)
+					if #placed_firework_boxes == 0 then 
+						util.toast("Place some fireworks first!")
+					return 
+					end
+					local ptfx_asset = "scr_indep_fireworks"
+					local effect_name = "scr_indep_firework_trailburst"
+					request_ptfx_asset(ptfx_asset)
+					for i=1, 32 do
 					for k,box in pairs(placed_firework_boxes) do 
 						GRAPHICS.USE_PARTICLE_FX_ASSET(ptfx_asset)
 						GRAPHICS.START_NETWORKED_PARTICLE_FX_NON_LOOPED_ON_ENTITY(effect_name, box, 0.0, 0.0, 0.0, 0.0, 180.0, 0.0, 1.0, 0.0, 0.0, 0.0)
-						util.yield(100)
+						util.yield(450)
 					end
-				end
-				for k,box in pairs(placed_firework_boxes) do 
-					entities.delete_by_handle(box)
-					placed_firework_boxes[box] = nil
-				end end)
+					end
+					for k,box in pairs(placed_firework_boxes) do 
+						entities.delete_by_handle(box)
+						placed_firework_boxes[box] = nil
+					end end)
+			MX.action(miscoptions, "Custom Fake Banner", {"banner"}, "", function(on_click) MX.show_command_box("banner ") end, function(text)
+				custom_alert(text)end)
 			MX.divider(miscoptions, "---> Casino <---")
 			MX.toggle_loop(miscoptions, "Auto Black Jack", {}, "", function()
 				if not (isHelpMessageBeingDisplayed('BJACK_BET') or isHelpMessageBeingDisplayed('BJACK_TURN') or isHelpMessageBeingDisplayed('BJACK_TURN_D') or isHelpMessageBeingDisplayed('BJACK_TURN_S')) then return end
@@ -2069,18 +2175,15 @@
 				end	end)
 		settings = MX.list(MX.my_root(), "> Settings", {}, "", function(); end)
 			MX.divider(settings, "---> Settings <---")
-			MX.action(settings, "Restart Script", {"ptrestart"}, "Restarts the script to clean the errors.", function()
-				util.restart_script()end)
+			credits = MX.list(settings, "> Credits", {}, "", function(); end)
+				MX.divider(credits, "---> I3lackExo <---")
+				MX.hyperlink(credits, "GitHub", "https://github.com/I3lackExo")
+				MX.hyperlink(credits, "Youtube", "https://www.youtube.com/channel/UC3VLV_wgIwbikbVbdT9SCqg")
 			MX.action(settings, "Command list", {}, "List all commands in this script.", function()
 				--Assistant("Restart Script -> !ptrestart\nClean Everything -> !ptclean", colors.black)
-				util.toast("Command List:\n\n> Restart Script -> !ptrestart\n> Clean Everything -> !ptclean\n> Remove Bounty -> !ptbounty\n> Disable Ghost -> !ptghost\n> Remove Expsniper -> !ptexplo\n> Host Kick -> !pthost\n> Network Bail -> !ptbail\n> UWU Crash -> !ptuwu\n> MNCCrash -> !ptmncrash")	
-			end)
-		credits = MX.list(MX.my_root(), "> Credits", {}, "", function(); end)
-			MX.divider(credits, "---> I3lackExo <---")
-			MX.hyperlink(credits, "GitHub", "https://github.com/I3lackExo")
-			MX.hyperlink(credits, "Youtube", "https://www.youtube.com/channel/UC3VLV_wgIwbikbVbdT9SCqg")
-			MX.divider(credits, "---> Support <---")
-			MX.hyperlink(credits, "E-Mail", "mailto:i3lackexo@gmail.com")
+				util.toast("Command List:\n\n> Restart Script -> !ptrestart\n> Clean Everything -> !ptclean\n> Remove Bounty -> !ptbounty\n> Disable Ghost -> !ptghost\n> Remove Expsniper -> !ptexplo\n> Host Kick -> !pthost\n> Network Bail -> !ptbail\n> UWU Crash -> !ptuwu\n> MNCCrash -> !ptmncrash")end)
+			MX.action(settings, "Restart Script", {"ptrestart"}, "Restarts the script to clean the errors.", function()
+				util.restart_script()end)
 		MX.toggle(MX.my_root(), "Bail On Admin Join", {}, "", function(on)
 				if on then
 					bailOnAdminJoin = on
@@ -2089,61 +2192,6 @@
 					bailOnAdminJoin = off
 					AssistantRAC("> Warning: If you meet an admin the risk of being banned is high.",colors.red)
 				end end)
-
------------------------------------------------------------------------------------------------------------------
-		--[[<Anim dict="anim@amb@clubhouse@boardroom@crew@male@var_c@base@" name="idle_a" />
-		<Anim dict="anim@amb@clubhouse@boardroom@crew@female@var_c@base_r@" name="base" />
-		<Anim dict="anim@amb@office@boardroom@crew@female@var_b@base@" name="base" />
-		<Anim dict="amb@world_human_leaning@female@wall@back@holding_elbow@base" name="base" />
-		<Anim dict="anim@amb@office@seating@female@var_a@base@" name="idle_b" />
-		<Anim dict="anim@amb@office@seating@female@var_b@base@" name="idle_a" />
-		<Anim dict="anim_heist@arcade_combined@" name="world_human_hang_out_street@_male_a@_idle_a_idle_c" />
-		<Anim dict="anim@amb@office@seating@male@var_c@base@" name="idle_c" />
-		<Anim dict="anim@amb@clubhouse@mini@darts@" name="wait_idle" />
-		<Anim dict="club_intro-100" name="csb_tonyprince_dual-100" />
-		<Anim dict="club_intro-101" name="mp_m_freemode_01_dual-101" />
-		<Anim dict="missheistdockssetup1ig_10@idle_b" name="talk_pipe_b_worker2" />
-		<Anim dict="missheistdockssetup1ig_10@idle_d" name="talk_pipe_d_worker2" />
-		<Anim dict="missheist_jewel_setup" name="idle_storeclerk" />
-		<Anim dict="amb@world_human_hang_out_street@female_hold_arm@idle_a" name="idle_a" />
-		<Anim dict="amb@world_human_hang_out_street@female_hold_arm@idle_a" name="idle_b" />
-		<Anim dict="amb@world_human_hang_out_street@female_hold_arm@idle_a" name="idle_c" />
-		<Anim dict="amb@world_human_leaning@female@smoke@idle_a" name="idle_c" />
-		<Anim dict="amb@world_human_leaning@female@smoke@idle_a" name="idle_a" />
-		<Anim dict="amb@world_human_leaning@female@wall@back@holding_elbow@idle_a" name="idle_a" />
-		<Anim dict="amb@world_human_picnic@female@idle_a" name="idle_b" />
-		<Anim dict="amb@world_human_picnic@female@idle_a" name="idle_c" />
-		<Anim dict="amb@world_human_seat_steps@female@hands_by_sides@idle_a" name="idle_a" />
-		<Anim dict="amb@world_human_seat_wall@female@hands_by_sides@idle_a" name="idle_c" />
-		<Anim dict="anim@amb@nightclub@dancers@crowddance_groups@" name="hi_dance_crowd_09_v1_female^3" />
-		<Anim dict="anim@amb@nightclub@peds@" name="mini_strip_club_lap_dance_ld_girl_a_song_a_p1" />
-		<Anim dict="anim@mp_yacht@shower@female@" name="shower_idle_a" />
-		<Anim dict="anim_casino_a@amb@casino@peds@" name="amb_world_human_hang_out_street_female_hold_arm_idle_b" />
-		<Anim dict="random@street_race" name="_car_a_flirt_girl" />
-		<Anim dict="bs_2a_mcs_10-2" name="csb_stripper_01_dual-2" />
-		<Anim dict="move_f@sexy@a" name="idle" />
-		<Anim dict="switch@michael@sitting_on_car_bonnet" name="sitting_on_car_bonnet_loop" />
-		<Anim dict="amb@world_human_hang_out_street@female_hold_arm@base" name="base" />
-		<Anim dict="anim@amb@casino@hangout@ped_female@stand@03a@base" name="base" />
-		<Anim dict="anim@amb@casino@hangout@ped_female@stand@03b@base" name="base" />
-		<Anim dict="amb@world_human_seat_wall@male@hands_in_lap@base" name="base" />
-		<Anim dict="amb@world_human_seat_wall_eating@female@sandwich_right_hand@base" name="base" />
-		<Anim dict="amb@world_human_seat_wall_eating@female@sandwich_right_hand@idle_a" name="idle_a" />
-		<Anim dict="amb@world_human_prostitute@crackhooker@idle_a" name="idle_b" />
-		<Anim dict="anim@amb@business@bgen@bgen_no_work@" name="sit_phone_phonepickup-noworkfemale" />
-		<Anim dict="anim@amb@business@bgen@bgen_no_work@" name="sit_phone_phonepickup_nowork" />
-		<Anim dict="anim@amb@business@bgen@bgen_no_work@" name="sit_phone_phoneputdown_fallasleep_nowork" />
-		<Anim dict="cellphone@self@franklin@" name="peace" />
-		<Anim dict="armenian_1_int-0" name="a_f_y_beach_01^2-0" />
-		<Anim dict="armenian_1_int-0" name="a_m_y_surfer_01-0" />
-		<Anim dict="armenian_1_int-0" name="cs_drfriedlander_dual-0" />
-		<Anim dict="amb@world_human_prostitute@cokehead@base" name="base" />
-		<Anim dict="amb@world_human_prostitute@french@base" name="base" />
-		<Anim dict="amb@world_human_prostitute@hooker@base" name="base" />
-		<Anim dict="mp_move@prostitute@f@cokehead" name="idle" />
-		<Anim dict="mp_move@prostitute@f@hooker" name="idle" />
-		<Anim dict="mp_move@prostitute@m@hooker" name="idle" />]]
------------------------------------------------------------------------------------------------------------------
 
 	-- {Playerlist}
 		GenerateFeatures = function(pid)
@@ -2188,7 +2236,7 @@
 				util.yield(7500)
 				entities.delete_by_handle(vehicle1)end)
 			
-				main = MX.list(MX.player_root(pid), "> Developer Options", {}, "", function(); end)
+				main = MX.list(MX.player_root(pid), "> Account Boosting", {}, "", function(); end)
 				MX.divider(main, "---> Account Boosting <---")
 				MX.action(main, "All Collectibles", {"racboost"}, "", function(on)
 						MX.trigger_commands("givecollectibles"..PLAYER.GET_PLAYER_NAME(pid))end)
@@ -2588,7 +2636,7 @@
 				players.on_join(GenerateFeatures)
 
 	-- {Starting Script Message}
-		Assistant("Merry Christmas! @"..SOCIALCLUB._SC_GET_NICKNAME().." :)", colors.pink)
+		Assistant("Hello @"..SOCIALCLUB._SC_GET_NICKNAME().."! :)", colors.pink)
 		--Assistant("I'm Mira, your "..MXName.." assistant. I will support you so that you can play safely in GTA Online. Have fun and see you later. ;)", colors.pink)
 
 	-- {Script End Message}
@@ -2626,3 +2674,58 @@
 					end
 			end
 		    util.yield() end
+
+-- [Animation List]
+	-----------------------------------------------------------------------------------------------------------------
+		--[[<Anim dict="anim@amb@clubhouse@boardroom@crew@male@var_c@base@" name="idle_a" />
+		<Anim dict="anim@amb@clubhouse@boardroom@crew@female@var_c@base_r@" name="base" />
+		<Anim dict="anim@amb@office@boardroom@crew@female@var_b@base@" name="base" />
+		<Anim dict="amb@world_human_leaning@female@wall@back@holding_elbow@base" name="base" />
+		<Anim dict="anim@amb@office@seating@female@var_a@base@" name="idle_b" />
+		<Anim dict="anim@amb@office@seating@female@var_b@base@" name="idle_a" />
+		<Anim dict="anim_heist@arcade_combined@" name="world_human_hang_out_street@_male_a@_idle_a_idle_c" />
+		<Anim dict="anim@amb@office@seating@male@var_c@base@" name="idle_c" />
+		<Anim dict="anim@amb@clubhouse@mini@darts@" name="wait_idle" />
+		<Anim dict="club_intro-100" name="csb_tonyprince_dual-100" />
+		<Anim dict="club_intro-101" name="mp_m_freemode_01_dual-101" />
+		<Anim dict="missheistdockssetup1ig_10@idle_b" name="talk_pipe_b_worker2" />
+		<Anim dict="missheistdockssetup1ig_10@idle_d" name="talk_pipe_d_worker2" />
+		<Anim dict="missheist_jewel_setup" name="idle_storeclerk" />
+		<Anim dict="amb@world_human_hang_out_street@female_hold_arm@idle_a" name="idle_a" />
+		<Anim dict="amb@world_human_hang_out_street@female_hold_arm@idle_a" name="idle_b" />
+		<Anim dict="amb@world_human_hang_out_street@female_hold_arm@idle_a" name="idle_c" />
+		<Anim dict="amb@world_human_leaning@female@smoke@idle_a" name="idle_c" />
+		<Anim dict="amb@world_human_leaning@female@smoke@idle_a" name="idle_a" />
+		<Anim dict="amb@world_human_leaning@female@wall@back@holding_elbow@idle_a" name="idle_a" />
+		<Anim dict="amb@world_human_picnic@female@idle_a" name="idle_b" />
+		<Anim dict="amb@world_human_picnic@female@idle_a" name="idle_c" />
+		<Anim dict="amb@world_human_seat_steps@female@hands_by_sides@idle_a" name="idle_a" />
+		<Anim dict="amb@world_human_seat_wall@female@hands_by_sides@idle_a" name="idle_c" />
+		<Anim dict="anim@amb@nightclub@dancers@crowddance_groups@" name="hi_dance_crowd_09_v1_female^3" />
+		<Anim dict="anim@amb@nightclub@peds@" name="mini_strip_club_lap_dance_ld_girl_a_song_a_p1" />
+		<Anim dict="anim@mp_yacht@shower@female@" name="shower_idle_a" />
+		<Anim dict="anim_casino_a@amb@casino@peds@" name="amb_world_human_hang_out_street_female_hold_arm_idle_b" />
+		<Anim dict="random@street_race" name="_car_a_flirt_girl" />
+		<Anim dict="bs_2a_mcs_10-2" name="csb_stripper_01_dual-2" />
+		<Anim dict="move_f@sexy@a" name="idle" />
+		<Anim dict="switch@michael@sitting_on_car_bonnet" name="sitting_on_car_bonnet_loop" />
+		<Anim dict="amb@world_human_hang_out_street@female_hold_arm@base" name="base" />
+		<Anim dict="anim@amb@casino@hangout@ped_female@stand@03a@base" name="base" />
+		<Anim dict="anim@amb@casino@hangout@ped_female@stand@03b@base" name="base" />
+		<Anim dict="amb@world_human_seat_wall@male@hands_in_lap@base" name="base" />
+		<Anim dict="amb@world_human_seat_wall_eating@female@sandwich_right_hand@base" name="base" />
+		<Anim dict="amb@world_human_seat_wall_eating@female@sandwich_right_hand@idle_a" name="idle_a" />
+		<Anim dict="amb@world_human_prostitute@crackhooker@idle_a" name="idle_b" />
+		<Anim dict="anim@amb@business@bgen@bgen_no_work@" name="sit_phone_phonepickup-noworkfemale" />
+		<Anim dict="anim@amb@business@bgen@bgen_no_work@" name="sit_phone_phonepickup_nowork" />
+		<Anim dict="anim@amb@business@bgen@bgen_no_work@" name="sit_phone_phoneputdown_fallasleep_nowork" />
+		<Anim dict="cellphone@self@franklin@" name="peace" />
+		<Anim dict="armenian_1_int-0" name="a_f_y_beach_01^2-0" />
+		<Anim dict="armenian_1_int-0" name="a_m_y_surfer_01-0" />
+		<Anim dict="armenian_1_int-0" name="cs_drfriedlander_dual-0" />
+		<Anim dict="amb@world_human_prostitute@cokehead@base" name="base" />
+		<Anim dict="amb@world_human_prostitute@french@base" name="base" />
+		<Anim dict="amb@world_human_prostitute@hooker@base" name="base" />
+		<Anim dict="mp_move@prostitute@f@cokehead" name="idle" />
+		<Anim dict="mp_move@prostitute@f@hooker" name="idle" />
+		<Anim dict="mp_move@prostitute@m@hooker" name="idle" />]]
